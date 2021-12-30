@@ -1,6 +1,8 @@
 """Display plain-text table of upcoming departures from a named station."""
 import requests
 import json
+import click
+
 from urllib.parse import urljoin
 from tabulate import tabulate
 
@@ -12,14 +14,18 @@ def get_train_services(crs: str, endpoint: str, realtime: bool = False) -> dict:
     train_services = {}
     if realtime:
         url = urljoin(API, f"/{endpoint}/{crs}/")
-        response = requests.get(url)
-        train_services = response.json()
+        try:
+            response = requests.get(url)
+            train_services = response.json()
+        except:
+            print("Error: Could not get train services for CRS code.")
+            raise SystemExit
     else:
         try:
             with open(f"./json/{crs.lower()}.json") as f:
                 train_services = json.load(f)
         except FileNotFoundError:
-            print(f"No JSON file found for {crs}")
+            print(f"Error: No JSON file found for {crs}")
             raise SystemExit
     return train_services
 
@@ -36,11 +42,19 @@ def get_departure_board(crs: str, realtime: bool = False) -> list:
             departures.append([train['std'], destination,
                               train['platform'], train['etd']])
     else:
-        departures.append(["", "No services found"])
+        departures.append(["", "No scheduled departures", "", ""])
     return departures
 
 
-if __name__ == "__main__":
-    departures = get_departure_board("WOK", True)
+@click.command()
+@click.option('--crs', default="wok", help='CRS code for station.')
+def departures(crs: str):
+    """Display plain-text table of upcoming departures from a named station."""
+    departures = get_departure_board(crs, True)
+
     print(tabulate(departures, headers=["Time", "Destination", "Plat", "Expected"],
                    colalign=("left", "left", "right", "right"), tablefmt="simple"))
+
+
+if __name__ == "__main__":
+    departures()
