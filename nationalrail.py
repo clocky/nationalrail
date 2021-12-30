@@ -24,8 +24,8 @@ def get_train_services(crs: str, endpoint: str, realtime: bool = False) -> dict:
             raise SystemExit
     else:
         try:
-            with open(f"./json/{crs.lower()}.json", encoding="utf-8") as f:
-                train_services = json.load(f)
+            with open(f"./json/{crs.lower()}.json", encoding="utf-8") as local_json:
+                train_services = json.load(local_json)
         except FileNotFoundError:
             print(f"Error: No JSON file found for {crs}")
             raise SystemExit
