@@ -34,7 +34,7 @@ def get_train_services(crs: str, endpoint: str, realtime: bool = False) -> dict:
     return train_services
 
 
-def get_departure_board(crs: str, realtime: bool = False) -> list:
+def get_departure_board(crs: str, realtime: bool = True) -> list:
     """Get departure board for a given CRS code."""
     departures = []
     services = get_train_services(crs, "departures", realtime)
@@ -43,18 +43,25 @@ def get_departure_board(crs: str, realtime: bool = False) -> list:
     if train_services != None:
         for train in train_services:
             destination = train['destination'][0]['locationName']
-            departures.append([train['std'], destination.ljust(32),
-                              train['platform'], train['etd']])
+
+            if train['isCancelled'] == True:
+                cancel_reason = train['cancelReason']
+                destination = f"{destination}\n{cancel_reason}"
+
+            departures.append(
+                [train['std'], destination.ljust(32),
+                 train['platform'], train['etd']])
     else:
         departures.append(["", "No scheduled departures", "", ""])
     return departures
 
 
-@click.command()
-@click.option('--crs', default="wok", help='CRS code for station.')
-def departures(crs: str):
+@ click.command()
+@ click.option('--crs', default="wok", help='CRS code for station.')
+@ click.option('--realtime', default=True, help='Use realtime data.')
+def departures(crs: str, realtime: bool):
     """Display plain-text table of upcoming departures from a named station."""
-    departures = get_departure_board(crs, True)
+    departures = get_departure_board(crs, realtime)
 
     print(tabulate(departures, headers=["Time", "Destination", "Plat", "Expected"],
                    colalign=("left", "left", "right", "right"), tablefmt="simple"))
