@@ -15,8 +15,12 @@ def get_train_services(crs: str, endpoint: str, realtime: bool = False) -> dict:
         response = requests.get(url)
         train_services = response.json()
     else:
-        with open(f"./json/{crs.lower()}.json") as f:
-            train_services = json.load(f)
+        try:
+            with open(f"./json/{crs.lower()}.json") as f:
+                train_services = json.load(f)
+        except FileNotFoundError:
+            print(f"No JSON file found for {crs}")
+            raise SystemExit
     return train_services
 
 
@@ -25,11 +29,12 @@ def get_departure_board(crs: str, realtime: bool = False) -> list:
     departures = []
     services = get_train_services(crs, "departures", realtime)
     train_services = services['trainServices']
+
     if train_services != None:
         for train in train_services:
             destination = train['destination'][0]['locationName']
             departures.append([train['std'], destination,
-                               train['platform'], train['etd']])
+                              train['platform'], train['etd']])
     else:
         departures.append(["", "No services found"])
     return departures
