@@ -4,7 +4,11 @@ import json
 import click
 
 from urllib.parse import urljoin
+
+import tabulate as tb
 from tabulate import tabulate
+tb.PRESERVE_WHITESPACE = True
+
 
 API = "https://huxley2.azurewebsites.net"
 
@@ -39,15 +43,15 @@ def get_departure_board(crs: str, realtime: bool = False) -> list:
     if train_services != None:
         for train in train_services:
             destination = train['destination'][0]['locationName']
-            departures.append([train['std'], destination,
+            departures.append([train['std'], destination.ljust(32),
                               train['platform'], train['etd']])
     else:
         departures.append(["", "No scheduled departures", "", ""])
     return departures
 
 
-@click.command()
-@click.option('--crs', default="wok", help='CRS code for station.')
+@ click.command()
+@ click.option('--crs', default="wok", help='CRS code for station.')
 def departures(crs: str):
     """Display plain-text table of upcoming departures from a named station."""
     departures = get_departure_board(crs, True)
