@@ -1,0 +1,7 @@
+{% for train_service in services.trainServices -%}
+     {{ train_service.sta }}
+     {%- for location in train_service.destination -%}
+          {{ " " }}{{ location.locationName }}{{ "\t\t" }}
+     {%- endfor -%}
+     {{ train_service.eta }}
+{% endfor -%}
