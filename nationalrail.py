@@ -62,7 +62,7 @@ def get_departure_board(crs: str, realtime: bool = True) -> list:
 @click.command()
 @click.option("--crs", default="wok", help="CRS code for station.")
 @click.option("--realtime", default=True, help="Use realtime data.")
-def departures(crs: str, realtime: bool):
+def get_departures(crs: str, realtime: bool):
     """Display plain-text table of upcoming departures from a named station."""
     departures = get_departure_board(crs, realtime)
 
@@ -77,4 +77,4 @@ def departures(crs: str, realtime: bool):
 
 
 if __name__ == "__main__":
-    departures()
+    get_departures()
