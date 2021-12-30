@@ -50,8 +50,8 @@ def get_departure_board(crs: str, realtime: bool = False) -> list:
     return departures
 
 
-@ click.command()
-@ click.option('--crs', default="wok", help='CRS code for station.')
+@click.command()
+@click.option('--crs', default="wok", help='CRS code for station.')
 def departures(crs: str):
     """Display plain-text table of upcoming departures from a named station."""
     departures = get_departure_board(crs, True)
