@@ -42,7 +42,7 @@ def get_departure_board(crs: str, realtime: bool = True) -> list:
         for service in train_services:
             destination = service["destination"][0]["locationName"]
 
-            if service["isCancelled"] == True:
+            if service["isCancelled"] is True:
                 cancel_reason = service["cancelReason"]
                 destination = f"{destination}\n{cancel_reason}"
 
