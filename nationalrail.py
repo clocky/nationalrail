@@ -19,16 +19,16 @@ def get_train_services(crs: str, endpoint: str, realtime: bool = False) -> dict:
         try:
             response = requests.get(url)
             train_services = response.json()
-        except:
-            print("Error: Could not get train services for CRS code.")
-            raise SystemExit
+        except ValueError as error:
+            print(f'Error: No listed train services for CRS code "{crs}". ')
+            raise SystemExit from error
     else:
         try:
             with open(f"./json/{crs.lower()}.json", encoding="utf-8") as local_json:
                 train_services = json.load(local_json)
-        except FileNotFoundError:
+        except FileNotFoundError as error:
             print(f"Error: No JSON file found for {crs}")
-            raise SystemExit
+            raise SystemExit from error
     return train_services
 
 
@@ -77,4 +77,4 @@ def get_departures(crs: str, realtime: bool):
 
 
 if __name__ == "__main__":
-    get_departures()
+    get_departures()  # pylint: disable=no-value-for-parameter
