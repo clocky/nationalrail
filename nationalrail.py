@@ -1,7 +1,7 @@
 """Display plain-text table of upcoming departures from a named station."""
 from urllib.parse import urljoin
-import requests
 import json
+import requests
 import click
 import tabulate as tb
 from tabulate import tabulate
