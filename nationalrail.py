@@ -38,7 +38,7 @@ def get_departure_board(crs: str, realtime: bool = True) -> list:
     services = get_train_services(crs, "departures", realtime)
     train_services = services["trainServices"]
 
-    if train_services != None:
+    if train_services is not None:
         for service in train_services:
             destination = service["destination"][0]["locationName"]
 
