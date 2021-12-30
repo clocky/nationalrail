@@ -36,7 +36,6 @@ def get_departure_board(crs: str, realtime: bool = False) -> list:
 
 
 if __name__ == "__main__":
-    tabulate.PRESERVE_WHITESPACE = True
-    departures = get_departure_board("WOK", False)
-    print(tabulate(departures, headers=[
-          "Time", "Destination", "Plat", "Expected"], tablefmt="simple"))
+    departures = get_departure_board("WOK", True)
+    print(tabulate(departures, headers=["Time", "Destination", "Plat", "Expected"],
+                   colalign=("left", "left", "right", "right"), tablefmt="simple"))
