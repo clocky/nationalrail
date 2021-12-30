@@ -11,7 +11,7 @@ tb.PRESERVE_WHITESPACE = True
 API = "https://huxley2.azurewebsites.net"
 
 
-def get_train_services(crs: str, endpoint: str, realtime: bool = False) -> dict:
+def get_train_services(crs: str, endpoint: str, realtime: bool = True) -> dict:
     """Get train services for a given CRS code."""
     train_services = {}
     if realtime:
