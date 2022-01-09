@@ -85,13 +85,21 @@ def draw_service_board(service: dict):
     # Calling points
     if service["calling_points"] is not None:
         draw.text((0, 36), text="Calling at:", fill="yellow", font=dotmatrix)
+
+        # Loop through available calling points
         for index, calling_point in enumerate(service["calling_points"]):
-            draw.text(
-                (0, 48 + (index * 12)),
-                text=calling_point["locationName"],
-                fill="white",
-                font=dotmatrix,
-            )
+            offset = 48 + (index * 12)
+            if offset <= 226:
+                draw.text(
+                    (0, offset),
+                    text=calling_point["locationName"],
+                    fill="white",
+                    font=dotmatrix,
+                )
+            else:
+                summary = f"{len(service['calling_points']) - index} more stops"
+                draw.text((0, offset), text=summary, fill="yellow", font=dotmatrix)
+                break
 
     # If there's no calling points, show any NRCC message that were passed
 
