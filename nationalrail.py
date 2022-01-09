@@ -84,7 +84,7 @@ def draw_service_board(service: dict):
 
     # Calling points
     if service["calling_points"] is not None:
-        draw.text((0, 38), text="Calling at:", fill="yellow", font=dotmatrix)
+        draw.text((0, 36), text="Calling at:", fill="yellow", font=dotmatrix)
         for index, calling_point in enumerate(service["calling_points"]):
             draw.text(
                 (0, 48 + (index * 12)),
@@ -100,7 +100,7 @@ def draw_service_board(service: dict):
             sentences = message["value"].split(". ")
             offset = 0
             for sentence in sentences:
-                sanitized = bleach.clean(sentence, tags=[], strip=True)
+                sanitized = bleach.clean(sentence, tags=[], strip=True).strip()
                 lines = textwrap.wrap(sanitized, width=26)
                 message = "\n".join(lines) + "."
                 draw.multiline_text(
