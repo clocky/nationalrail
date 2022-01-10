@@ -7,7 +7,7 @@ import bleach
 import click
 import dateutil.parser
 import requests
-from inky.auto import auto
+from inky.auto import auto  # type: ignore
 from PIL import Image, ImageDraw, ImageFont
 
 API = "https://huxley2.azurewebsites.net"
