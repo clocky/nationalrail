@@ -110,7 +110,12 @@ def draw_service_board(service: dict):
             for sentence in sentences:
                 sanitized = bleach.clean(sentence, tags=[], strip=True).strip()
                 lines = textwrap.wrap(sanitized, width=26)
-                message = "\n".join(lines) + "."
+                message = "\n".join(lines)
+
+                # Add missing full stops to the end of the message
+                if message[-1] != ".":
+                    message = message + "."
+
                 draw.multiline_text(
                     (0, 48 + offset),
                     text=message,
