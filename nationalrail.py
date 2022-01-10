@@ -1,4 +1,5 @@
 """Display plain-text table of upcoming departures from a named station."""
+import sys
 import textwrap
 from urllib.parse import urljoin
 
@@ -6,6 +7,7 @@ import bleach
 import click
 import dateutil.parser
 import requests
+from inky.auto import auto
 from PIL import Image, ImageDraw, ImageFont
 
 API = "https://huxley2.azurewebsites.net"
@@ -130,6 +132,14 @@ def draw_service_board(service: dict):
 def get_departures(crs: str):
     """Display plain-text table of upcoming departures from a named station."""
     draw_service_board(get_service_board(crs))
+    try:
+        display = auto()
+    except RuntimeError:
+        click.echo("No display found.")
+        sys.exit(1)
+    else:
+        display.set_image(Image.open("./signage.png"))
+        sys.exit(1)
 
 
 if __name__ == "__main__":
