@@ -5,6 +5,7 @@ from urllib.parse import urljoin
 
 import bleach
 import click
+import datetime
 import dateutil.parser
 import requests
 from inky.auto import auto  # type: ignore
@@ -20,10 +21,10 @@ def get_train_services(
     crs: str, endpoint: str, expand: bool = False, rows: int = 1
 ) -> dict:
     """Get train services for a given CRS code."""
-    train_services = {}
-    url = urljoin(API, f"/{endpoint}/{crs}/{rows}?expand={expand}")
+    train_services: dict = {}
+    url: str = urljoin(API, f"/{endpoint}/{crs}/{rows}?expand={expand}")
     try:
-        response = requests.get(url)
+        response: requests.models.Response = requests.get(url)
         train_services = response.json()
     except ValueError as error:
         print(f'Error: No listed train services for CRS code "{crs}". ')
@@ -33,8 +34,9 @@ def get_train_services(
 
 def get_service_board(crs: str) -> dict:
     """Retrieve details of a specific service."""
-    service = {}
-    services = get_train_services(crs, endpoint="departures", rows=1, expand=True)
+    service: dict = {}
+    services: dict = get_train_services(crs, endpoint="departures", rows=1, expand=True)
+    generated_at: datetime.datetime = dateutil.parser.isoparse(services["generatedAt"])
 
     if services["trainServices"]:
         train_service = services["trainServices"][0]
@@ -51,7 +53,6 @@ def get_service_board(crs: str) -> dict:
         }
     else:
         # Only shown when no services are running (e.g. during early hours)
-        generated_at = dateutil.parser.isoparse(services["generatedAt"])
         service = {
             "std": generated_at.strftime("%H:%M"),
             "etd": None,
@@ -64,7 +65,7 @@ def get_service_board(crs: str) -> dict:
     return service
 
 
-def draw_service_board(service: dict):
+def draw_service_board(service: dict) -> bool:
     """Render train information to PNG using Pillow library."""
 
     # Create the image
@@ -76,7 +77,7 @@ def draw_service_board(service: dict):
 
     # Estimated time of departure
     if service["etd"] is not None:
-        color = "white" if service["is_cancelled"] else "yellow"
+        color: str = "white" if service["is_cancelled"] else "yellow"
         draw.text((122, 0), service["etd"], color, DOTMATRIX, "rt")
 
     # Destination
@@ -103,7 +104,7 @@ def draw_service_board(service: dict):
 
     if service["calling_points"] is None and service["nrcc_messages"] is not None:
         for message in service["nrcc_messages"]:
-            sentences = message["value"].split(". ")
+            sentences: list = message["value"].split(". ")
             offset = 0
             for sentence in sentences:
                 sanitized = bleach.clean(sentence, tags=[], strip=True).strip()
@@ -125,6 +126,7 @@ def draw_service_board(service: dict):
 
     # Finally, save the image to disk
     img.save("./signage.png")
+    return True
 
 
 @click.command()
