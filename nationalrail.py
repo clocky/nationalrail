@@ -82,7 +82,7 @@ def draw_service_board(service: dict):
 
     # Calling points
     if service["calling_points"] is not None:
-        draw.text((0, 36), text="Calling at:", fill="yellow", font=dotmatrix)
+        draw.text((0, 36), "Calling at:", "yellow", dotmatrix)
 
         # Loop through available calling points
         for index, calling_point in enumerate(service["calling_points"]):
@@ -118,6 +118,8 @@ def draw_service_board(service: dict):
     # Operator
     if service["operator"] is not None:
         draw.text((0, 240), service["operator"], "yellow", dotmatrix_bold)
+
+    # Finally, save the image to disk
     img.save("./signage.png")
 
 
