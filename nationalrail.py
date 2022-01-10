@@ -9,6 +9,9 @@ import requests
 from PIL import Image, ImageDraw, ImageFont
 
 API = "https://huxley2.azurewebsites.net"
+DOTMATRIX = ImageFont.truetype("./fonts/Dot Matrix Regular.ttf", 10)
+DOTMATRIX_LG = ImageFont.truetype("./fonts/Dot Matrix Regular.ttf", 18)
+DOTMATRIX_BOLD = ImageFont.truetype("./fonts/Dot Matrix Bold.ttf", 10)
 
 
 def get_train_services(
@@ -61,38 +64,35 @@ def get_service_board(crs: str) -> dict:
 
 def draw_service_board(service: dict):
     """Render train information to PNG using Pillow library."""
-    dotmatrix = ImageFont.truetype("./fonts/Dot Matrix Regular.ttf", 10)
-    dotmatrix_lg = ImageFont.truetype("./fonts/Dot Matrix Regular.ttf", 18)
-    dotmatrix_bold = ImageFont.truetype("./fonts/Dot Matrix Bold.ttf", 10)
 
     # Create the image
     img = Image.new("RGB", (122, 250))
     draw = ImageDraw.Draw(img)
 
     # Header
-    draw.text((0, 0), service["std"], "yellow", dotmatrix)
+    draw.text((0, 0), service["std"], "yellow", DOTMATRIX)
 
     # Estimated time of departure
     if service["etd"] is not None:
-        draw.text((122, 0), service["etd"], "yellow", dotmatrix, "rt")
+        draw.text((122, 0), service["etd"], "yellow", DOTMATRIX, "rt")
 
     # Destination
     if service["destination"] is not None:
-        draw.text((0, 14), service["destination"], "yellow", dotmatrix_lg)
+        draw.text((0, 14), service["destination"], "yellow", DOTMATRIX_LG)
 
     # Calling points
     if service["calling_points"] is not None:
-        draw.text((0, 36), "Calling at:", "yellow", dotmatrix)
+        draw.text((0, 36), "Calling at:", "yellow", DOTMATRIX)
 
         # Loop through available calling points
         for index, calling_point in enumerate(service["calling_points"]):
             offset = 48 + (index * 12)
             if offset <= 226:
                 location_name = calling_point["locationName"]
-                draw.text((0, offset), location_name, "white", dotmatrix)
+                draw.text((0, offset), location_name, "white", DOTMATRIX)
             else:
                 summary = f"{len(service['calling_points']) - index} more stops"
-                draw.text((0, offset), summary, "yellow", dotmatrix)
+                draw.text((0, offset), summary, "yellow", DOTMATRIX)
                 break
 
     # If there's no calling points, show any NRCC message that were passed
@@ -111,13 +111,13 @@ def draw_service_board(service: dict):
                     message = message + "."
 
                 draw.multiline_text(
-                    (0, 48 + offset), message, "white", dotmatrix, spacing=4
+                    (0, 48 + offset), message, "white", DOTMATRIX, spacing=4
                 )
                 offset = offset + (len(lines) * 12)
 
     # Operator
     if service["operator"] is not None:
-        draw.text((0, 240), service["operator"], "yellow", dotmatrix_bold)
+        draw.text((0, 240), service["operator"], "yellow", DOTMATRIX_BOLD)
 
     # Finally, save the image to disk
     img.save("./signage.png")
