@@ -86,10 +86,11 @@ def draw_service_board(service: dict):
         draw.text((0, 36), "Calling at:", "yellow", DOTMATRIX)
 
         # Loop through available calling points
+        total: int = len(service["calling_points"])
         for index, calling_point in enumerate(service["calling_points"]):
             offset = 48 + (index * 12)
-            if offset <= 226:
-                location_name = calling_point["locationName"]
+            location_name = calling_point["locationName"]
+            if index <= 14 or index == (total - 1):
                 draw.text((0, offset), location_name, "white", DOTMATRIX)
             else:
                 summary = f"{len(service['calling_points']) - index} more stops"
