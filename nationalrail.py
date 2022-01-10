@@ -74,7 +74,8 @@ def draw_service_board(service: dict):
 
     # Estimated time of departure
     if service["etd"] is not None:
-        draw.text((122, 0), service["etd"], "yellow", DOTMATRIX, "rt")
+        color = "white" if service["is_cancelled"] else "yellow"
+        draw.text((122, 0), service["etd"], color, DOTMATRIX, "rt")
 
     # Destination
     if service["destination"] is not None:
