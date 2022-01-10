@@ -123,7 +123,7 @@ def draw_service_board(service: dict):
     # Operator
     if service["operator"] is not None:
         draw.text(
-            (0, 242), text=service["operator"], fill="yellow", font=dotmatrix_bold
+            (0, 240), text=service["operator"], fill="yellow", font=dotmatrix_bold
         )
     img.save("./signage.png")
 
