@@ -70,17 +70,15 @@ def draw_service_board(service: dict):
     draw = ImageDraw.Draw(img)
 
     # Header
-    draw.text((0, 0), text=service["std"], fill="yellow", font=dotmatrix)
+    draw.text((0, 0), service["std"], "yellow", dotmatrix)
 
+    # Estimated time of departure
     if service["etd"] is not None:
-        draw.text(
-            (122, 0), text=service["etd"], fill="yellow", font=dotmatrix, anchor="rt"
-        )
+        draw.text((122, 0), service["etd"], "yellow", dotmatrix, "rt")
 
+    # Destination
     if service["destination"] is not None:
-        draw.text(
-            (0, 14), text=service["destination"], fill="yellow", font=dotmatrix_lg
-        )
+        draw.text((0, 14), service["destination"], "yellow", dotmatrix_lg)
 
     # Calling points
     if service["calling_points"] is not None:
@@ -90,15 +88,11 @@ def draw_service_board(service: dict):
         for index, calling_point in enumerate(service["calling_points"]):
             offset = 48 + (index * 12)
             if offset <= 226:
-                draw.text(
-                    (0, offset),
-                    text=calling_point["locationName"],
-                    fill="white",
-                    font=dotmatrix,
-                )
+                location_name = calling_point["locationName"]
+                draw.text((0, offset), location_name, "white", dotmatrix)
             else:
                 summary = f"{len(service['calling_points']) - index} more stops"
-                draw.text((0, offset), text=summary, fill="yellow", font=dotmatrix)
+                draw.text((0, offset), summary, "yellow", dotmatrix)
                 break
 
     # If there's no calling points, show any NRCC message that were passed
@@ -117,19 +111,13 @@ def draw_service_board(service: dict):
                     message = message + "."
 
                 draw.multiline_text(
-                    (0, 48 + offset),
-                    text=message,
-                    fill="white",
-                    font=dotmatrix,
-                    spacing=4,
+                    (0, 48 + offset), message, "white", dotmatrix, spacing=4
                 )
                 offset = offset + (len(lines) * 12)
 
     # Operator
     if service["operator"] is not None:
-        draw.text(
-            (0, 240), text=service["operator"], fill="yellow", font=dotmatrix_bold
-        )
+        draw.text((0, 240), service["operator"], "yellow", dotmatrix_bold)
     img.save("./signage.png")
 
 
