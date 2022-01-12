@@ -6,7 +6,8 @@ API to display upcoming rail departures for a given railway station in the UK.
 ## Installation
 
 ```bash
-pip3 install -r requirements.txt
+python3 -m pip install inky --no-dependencies
+python3 -m pip install -r requirements.txt
 ```
 
 ## Usage
