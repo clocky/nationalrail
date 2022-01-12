@@ -18,19 +18,12 @@ The following script will show upcoming departures from **Woking**, which has th
 python3 nationalrail.py --crs=WOK
 ```
 
-### Sample output
+## Sample output
 
-```text
-Time    Destination                Plat    Expected
-------  -----------------------  ------  ----------
-03:42   Manchester Airport            5     On time
-03:46   Manchester Airport            9     On time
-04:18   Manchester Airport           13     On time
-04:48   York                         10     On time
-04:50   Manchester Airport                  On time
-04:57   Manchester Airport                  On time
-04:57   Oxenholme Lake District           Cancelled
-05:04   Blackpool North                     On time
-05:05   London Euston                       On time
-05:08   Manchester Airport                  On time
-```
+Images are 250x122 for deployment on an [Pimoroni Inky pHaT](https://shop.pimoroni.com/products/inky-phat?variant=12549254217811) display.
+
+### Station departures
+![docs/platform.png](docs/platform.png)
+
+### Platform departure
+![docs/service.png](docs/service.png)
