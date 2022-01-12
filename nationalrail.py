@@ -1,11 +1,11 @@
 """Display plain-text table of upcoming departures from a named station."""
+import datetime as dt
 import sys
 import textwrap
 from urllib.parse import urljoin
 
 import bleach
 import click
-import datetime
 import dateutil.parser
 import requests
 from inky.auto import auto  # type: ignore
@@ -36,7 +36,7 @@ def get_service_board(crs: str) -> dict:
     """Retrieve details of a specific service."""
     service: dict = {}
     services: dict = get_train_services(crs, endpoint="departures", rows=1, expand=True)
-    generated_at: datetime.datetime = dateutil.parser.isoparse(services["generatedAt"])
+    generated_at: dt.datetime = dateutil.parser.isoparse(services["generatedAt"])
 
     if services["trainServices"]:
         train_service = services["trainServices"][0]
@@ -63,6 +63,37 @@ def get_service_board(crs: str) -> dict:
         }
 
     return service
+
+
+def draw_platform_board(services: dict) -> None:
+    """Render train information to PNG using Pillow library."""
+
+    font = ImageFont.load("fonts/ctrld-fixed-13r.pil")
+    font_xl = ImageFont.load("fonts/ctrld-fixed-16r.pil")
+    img = Image.new("RGB", (250, 122))
+    draw = ImageDraw.Draw(img)
+
+    if services["trainServices"] is not None:
+        train_services: list = services["trainServices"]
+        generated_at: dt.datetime = dateutil.parser.isoparse(services["generatedAt"])
+        timestamp: str = generated_at.strftime("%H:%M")
+
+        draw.text((0, 0), "Dep", "white", font)
+        draw.text((44, 0), "Destination", "white", font)
+        draw.text((194, 0), "Expected", "white", font)
+
+        for index, service in enumerate(train_services):
+            offset: int = 16 + (index * 15)
+            location_name: str = service["destination"][0]["locationName"]
+            width: int = len(service["etd"]) * 7
+
+            draw.text((0, offset), service["std"], "yellow", font)
+            draw.text((44, offset), location_name, "yellow", font)
+            draw.text((250 - width, offset), service["etd"], "yellow", font)
+
+        draw.text((107, 105), timestamp, "white", font_xl)
+
+    img.save("./signage.png")
 
 
 def draw_service_board(service: dict) -> bool:
@@ -131,9 +162,15 @@ def draw_service_board(service: dict) -> bool:
 
 @click.command()
 @click.option("--crs", default="wok", help="CRS code for station.")
-def get_departures(crs: str):
+@click.option("--style", default="service", help="CRS code for station.")
+def get_departures(crs: str, style: str) -> None:
     """Display plain-text table of upcoming departures from a named station."""
-    draw_service_board(get_service_board(crs))
+    if style == "service":
+        draw_service_board(get_service_board(crs))
+    elif style == "platform":
+        services = get_train_services(crs=crs, endpoint="departures", rows=6)
+        draw_platform_board(services)
+
     try:
         display = auto()
     except RuntimeError:
