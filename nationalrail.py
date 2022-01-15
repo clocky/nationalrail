@@ -132,7 +132,7 @@ def draw_station_board(services: dict) -> None:
         offset = 60 + (i * 38)
         for x in range(left, right, dot):
             for y in range(offset, offset + 26, dot):
-                draw.ellipse([(x, y), (x + 2, y + 2)], fill="#332e1c")
+                draw.ellipse([(x, y), (x + 2, y + 2)], fill="#231e0c")
 
     if services["trainServices"] is not None:
 
