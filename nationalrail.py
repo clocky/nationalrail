@@ -7,6 +7,7 @@ from urllib.parse import urljoin
 import bleach
 import click
 import dateutil.parser
+from markupsafe import string
 import requests
 from inky.auto import auto  # type: ignore
 from PIL import Image, ImageDraw, ImageFont
@@ -134,25 +135,30 @@ def draw_station_board(services: dict) -> None:
             for y in range(offset, offset + 26, dot):
                 draw.ellipse([(x, y), (x + 2, y + 2)], fill="#231e0c")
 
+    # Check if any services are running
     if services["trainServices"] is not None:
 
         index: int = 0
         for service in services["trainServices"]:
             offset = 60 + (index * 38)
 
-            if service["etd"] is not None:
+            # Draw the scheduled time of departure
+            if service["std"] is not None:
                 std: str = service["std"]
                 draw.text((left, offset), std, yellow, font)
 
+            # Draw the destination
             if service["destination"] is not None:
                 location_name: str = service["destination"][0]["locationName"]
                 draw.text((left + 100, offset), location_name, yellow, font)
 
+                # Draw the via location
                 via: str = service["destination"][0]["via"]
                 if via is not None and index < maximum_lines:
                     draw.text((left + 100, offset + 38), via, yellow, font)
                     index = index + 1
 
+            # Draw the platform
             if service["platform"] is not None:
                 draw.text(
                     (width - 224, offset),
@@ -162,24 +168,27 @@ def draw_station_board(services: dict) -> None:
                     anchor="rt",
                 )
 
+            # Draw the estimated time of departure
             if service["etd"] is not None:
                 etd: str = service["etd"]
                 draw.text((width - margin_x, offset), etd, yellow, font, anchor="rt")
 
                 offset = 60 + (index * 38)
-                a: int = left + 100
-                b: int = offset + 38
-                pos: tuple = (a, b)
                 if etd == "Delayed" and service["delayReason"] is not None:
                     delay_reason = service["delayReason"].partition("delayed by")
                     reason = f"Service delayed due to {delay_reason[2].strip()}"
-                    draw.text(pos, reason, yellow, font)
+                    draw.text((left + 100, offset + 38), reason, yellow, font)
                     index = index + 1
                 elif etd == "Cancelled" and service["cancelReason"] is not None:
                     cancel_reason = service["cancelReason"].partition("because of")
-                    reason = f"Service cancelled due to {cancel_reason[2].strip()}"[:48]
-                    draw.text(pos, reason, yellow, font)
-                    index = index + 1
+                    reason = f"Service cancelled due to {cancel_reason[2].strip()}"
+                    # reason = service["cancelReason"]
+
+                    lines = get_multiline_text(reason, font, 480)
+                    for number, line in enumerate(lines):
+                        y = offset + 38 + (number * 38)
+                        draw.text((left + 100, y), line.strip(), yellow, font)
+                        index = index + 1
 
             index = index + 1
             if index > maximum_lines:
@@ -191,6 +200,27 @@ def draw_station_board(services: dict) -> None:
         draw.text((left, 402), "Page 1 of 1", yellow, font_b, "lt")
 
         img.save("./signage.png")
+
+
+def get_multiline_text(text: str, font: ImageFont, max_width: int) -> list:
+    """Split text into lines of a maximum width."""
+    img = Image.new("RGB", (122, 250))
+    draw = ImageDraw.Draw(img)
+
+    words = text.split(" ")
+    lines = []
+    line = ""
+
+    for word in words:
+        if draw.textsize(line + " " + word, font)[0] < max_width:
+            line = line + " " + word
+        else:
+            lines.append(line)
+            line = word
+
+    lines.append(line)
+
+    return lines
 
 
 def draw_service_board(service: dict) -> None:
