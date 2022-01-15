@@ -96,7 +96,104 @@ def draw_platform_board(services: dict) -> None:
     img.save("./signage.png")
 
 
-def draw_service_board(service: dict) -> bool:
+def draw_station_board(services: dict) -> None:
+    """Render station information to PNG using Pillow library."""
+    title = ImageFont.truetype("./fonts/Inter-Bold.otf", 26)
+    title_xl = ImageFont.truetype("./fonts/Inter-Bold.otf", 36)
+    font = ImageFont.truetype("./fonts/Dot Matrix Regular.ttf", 30)
+    font_b = ImageFont.truetype("./fonts/Dot Matrix Bold.ttf", 30)
+    font_bt = ImageFont.truetype("./fonts/Dot Matrix Bold Tall.ttf", 30)
+
+    width: int = 800
+    height: int = 480
+    margin_x: int = 48
+    yellow: str = "#e2dc84"
+    left: int = margin_x
+    right: int = width - margin_x
+    maximum_lines: int = 7
+
+    img = Image.new("RGB", (width, height))
+    draw = ImageDraw.Draw(img)
+    generated_at: dt.datetime = dateutil.parser.isoparse(services["generatedAt"])
+    time: str = generated_at.strftime("%H:%M:%S")
+    location_name: str = services["locationName"]
+
+    draw.text((margin_x - 4, 14), "Time", "white", title, anchor="la")
+    draw.text((margin_x + 96, 14), "Destination", "white", title, anchor="la")
+    draw.text((width - 224, 14), "Plat", "white", title, anchor="ra")
+    draw.text((width - margin_x, 14), "Expected", "white", title, anchor="ra")
+    draw.text((400, 432), location_name, "white", title_xl, anchor="ma")
+
+    offset: int = 0
+
+    for i in range(0, 10):
+        # Draw fake LCD backgrounds
+        dot = 3
+        offset = 60 + (i * 38)
+        for x in range(left, right, dot):
+            for y in range(offset, offset + 26, dot):
+                draw.ellipse([(x, y), (x + 2, y + 2)], fill="#332e1c")
+
+    if services["trainServices"] is not None:
+
+        index: int = 0
+        for service in services["trainServices"]:
+            offset = 60 + (index * 38)
+
+            if service["etd"] is not None:
+                std: str = service["std"]
+                draw.text((left, offset), std, yellow, font)
+
+            if service["destination"] is not None:
+                location_name: str = service["destination"][0]["locationName"]
+                draw.text((left + 100, offset), location_name, yellow, font)
+
+                via: str = service["destination"][0]["via"]
+                if via is not None and index < maximum_lines:
+                    draw.text((left + 100, offset + 38), via, yellow, font)
+                    index = index + 1
+
+            if service["platform"] is not None:
+                draw.text(
+                    (width - 224, offset),
+                    service["platform"],
+                    yellow,
+                    font,
+                    anchor="rt",
+                )
+
+            if service["etd"] is not None:
+                etd: str = service["etd"]
+                draw.text((width - margin_x, offset), etd, yellow, font, anchor="rt")
+
+                offset = 60 + (index * 38)
+                a: int = left + 100
+                b: int = offset + 38
+                pos: tuple = (a, b)
+                if etd == "Delayed" and service["delayReason"] is not None:
+                    delay_reason = service["delayReason"].partition("delayed by")
+                    reason = f"Service delayed due to {delay_reason[2].strip()}"
+                    draw.text(pos, reason, yellow, font)
+                    index = index + 1
+                elif etd == "Cancelled" and service["cancelReason"] is not None:
+                    cancel_reason = service["cancelReason"].partition("because of")
+                    reason = f"Service cancelled due to {cancel_reason[2].strip()}"[:48]
+                    draw.text(pos, reason, yellow, font)
+                    index = index + 1
+
+            index = index + 1
+            if index > maximum_lines:
+                break
+
+        # Timestamp
+        draw.text((right, 402), time, yellow, font_bt, "rt")
+        # Page
+        draw.text((left, 402), "Page 1 of 1", yellow, font_b, "lt")
+
+        img.save("./signage.png")
+
+
+def draw_service_board(service: dict) -> None:
     """Render train information to PNG using Pillow library."""
 
     # Create the image
@@ -157,7 +254,6 @@ def draw_service_board(service: dict) -> bool:
 
     # Finally, save the image to disk
     img.save("./signage.png")
-    return True
 
 
 @click.command()
@@ -166,7 +262,13 @@ def draw_service_board(service: dict) -> bool:
 def get_departures(crs: str, style: str) -> None:
     """Display plain-text table of upcoming departures from a named station."""
     if style == "service":
-        draw_service_board(get_service_board(crs))
+        services = get_service_board(crs)
+        draw_service_board(services)
+    elif style == "station":
+        services = get_train_services(
+            crs=crs, endpoint="departures", rows=9, expand=True
+        )
+        draw_station_board(services)
     elif style == "platform":
         services = get_train_services(crs=crs, endpoint="departures", rows=6)
         draw_platform_board(services)
