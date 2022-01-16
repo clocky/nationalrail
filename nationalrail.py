@@ -7,7 +7,6 @@ from urllib.parse import urljoin
 import bleach
 import click
 import dateutil.parser
-from markupsafe import string
 import requests
 from inky.auto import auto  # type: ignore
 from PIL import Image, ImageDraw, ImageFont
