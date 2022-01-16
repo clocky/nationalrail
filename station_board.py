@@ -140,17 +140,6 @@ def draw_services(draw: ImageDraw.ImageDraw, services: list):
             if etd == "Delayed" and service["delayReason"] is not None:
                 delay_reason = service["delayReason"].partition("delayed by")
                 reason = f"Service delayed due to {delay_reason[2].strip()}"
-                draw.text(
-                    xy=(Display.LEFT + 100, offset + Display.LINE_HEIGHT),
-                    text=reason,
-                    fill=Color.YELLOW,
-                    font=Font.DOTMATRIX,
-                )
-                line = line + 1
-            elif etd == "Cancelled" and service["cancelReason"] is not None:
-                cancel_reason = service["cancelReason"].partition("because of")
-                reason = f"Service cancelled due to {cancel_reason[2].strip()}"
-
                 lines = get_multiline_text(reason, Font.DOTMATRIX, 480)
                 for number, text in enumerate(lines):
                     y = offset + Display.LINE_HEIGHT + (number * Display.LINE_HEIGHT)
@@ -161,6 +150,26 @@ def draw_services(draw: ImageDraw.ImageDraw, services: list):
                         font=Font.DOTMATRIX,
                     )
                     line = line + 1
+
+            elif etd == "Cancelled" and service["cancelReason"] is not None:
+                cancel_reason = service["cancelReason"].partition("because of")
+                reason = f"Service cancelled due to {cancel_reason[2].strip()}"
+
+                if line < Display.LINES:
+                    lines = get_multiline_text(reason, Font.DOTMATRIX, 480)
+                    for number, text in enumerate(lines):
+                        y = (
+                            offset
+                            + Display.LINE_HEIGHT
+                            + (number * Display.LINE_HEIGHT)
+                        )
+                        draw.text(
+                            xy=(Display.LEFT + 100, y),
+                            text=text.strip(),
+                            fill=Color.YELLOW,
+                            font=Font.DOTMATRIX,
+                        )
+                        line = line + 1
 
         line = line + 1
         if line > Display.LINES:
