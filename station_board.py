@@ -109,9 +109,9 @@ def draw_led(
 
 
 def draw_services(draw: ImageDraw.ImageDraw, services: list):
-    index: int = 0
+    line: int = 0
     for service in services:
-        offset = 60 + (index * Display.LINE_HEIGHT)
+        offset = 60 + (line * Display.LINE_HEIGHT)
 
         # Draw the scheduled time of departure
         if service["std"] is not None:
@@ -123,9 +123,9 @@ def draw_services(draw: ImageDraw.ImageDraw, services: list):
             via: str = service["destination"][0]["via"]
 
             draw_led(draw, (Display.LEFT + 100, offset), destination)
-            if via is not None and index < Display.LINES:
+            if via is not None and line < Display.LINES:
                 draw_led(draw, (Display.LEFT + 100, offset + Display.LINE_HEIGHT), via)
-                index = index + 1
+                line = line + 1
 
         # Draw the platform
         if service["platform"] is not None:
@@ -136,7 +136,7 @@ def draw_services(draw: ImageDraw.ImageDraw, services: list):
             etd: str = service["etd"]
             draw_led(draw, (Display.WIDTH - Display.MARGIN, offset), etd, "rt")
 
-            offset = 60 + (index * Display.LINE_HEIGHT)
+            offset = 60 + (line * Display.LINE_HEIGHT)
             if etd == "Delayed" and service["delayReason"] is not None:
                 delay_reason = service["delayReason"].partition("delayed by")
                 reason = f"Service delayed due to {delay_reason[2].strip()}"
@@ -146,7 +146,7 @@ def draw_services(draw: ImageDraw.ImageDraw, services: list):
                     fill=Color.YELLOW,
                     font=Font.DOTMATRIX,
                 )
-                index = index + 1
+                line = line + 1
             elif etd == "Cancelled" and service["cancelReason"] is not None:
                 cancel_reason = service["cancelReason"].partition("because of")
                 reason = f"Service cancelled due to {cancel_reason[2].strip()}"
@@ -160,10 +160,10 @@ def draw_services(draw: ImageDraw.ImageDraw, services: list):
                         fill=Color.YELLOW,
                         font=Font.DOTMATRIX,
                     )
-                    index = index + 1
+                    line = line + 1
 
-        index = index + 1
-        if index > Display.LINES:
+        line = line + 1
+        if line > Display.LINES:
             break
 
 
@@ -214,7 +214,7 @@ def get_multiline_text(text: str, font: ImageFont.FreeTypeFont, max_width: int) 
 @click.option("--crs", default="wok", help="CRS code for station.")
 def get_departures(crs: str) -> None:
     """Display plain-text table of upcoming departures from a named station."""
-    services = get_train_services(crs=crs, rows=9, expand=False)
+    services = get_train_services(crs=crs, rows=10, expand=False)
     draw_station_board(services)
 
 
