@@ -137,7 +137,7 @@ def draw_services(draw: ImageDraw.ImageDraw, services: list):
             draw_led(draw, (Display.WIDTH - Display.MARGIN, offset), etd, "rt")
 
             offset = 60 + (line * Display.LINE_HEIGHT)
-            if etd == "Delayed" and service["delayReason"] is not None:
+            if service["delayReason"] is not None:
                 delay_reason = service["delayReason"].partition("delayed by")
                 reason = f"Service delayed due to {delay_reason[2].strip()}"
                 lines = get_multiline_text(reason, Font.DOTMATRIX, 480)
