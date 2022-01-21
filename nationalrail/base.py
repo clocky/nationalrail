@@ -1,6 +1,7 @@
 import datetime
 import logging
 from dataclasses import dataclass
+from sys import settrace
 from urllib.parse import urljoin
 
 import bleach
@@ -39,6 +40,17 @@ class Huxley:
         self.nrcc_messages = self.get_nrcc_messages()
         return None
 
+    @property
+    def crs(self):
+        return self._crs
+
+    @crs.setter
+    def crs(self, value: str):
+        if len(value) < 3:
+            raise ValueError(f"CRS code must be at least 3 characters long.")
+        else:
+            self._crs = value
+
     def get_services(self) -> dict:
         """Get train services for a known CRS code."""
         services: dict = {}
@@ -54,6 +66,7 @@ class Huxley:
 
     def get_train_services(self) -> list:
         train_services: list = []
+        print(self.services)
         if self.services["trainServices"] is not None:
             for train_service in self.services["trainServices"]:
                 service = Service()
