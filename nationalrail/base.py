@@ -16,18 +16,14 @@ class Server:
 
 @dataclass
 class Service:
+    etd: str = ""
+    std: str = ""
     origin: str = ""
     destination: str = ""
     platform: str = ""
     is_cancelled: bool = False
     cancel_reason: str = ""
     via: str = ""
-
-
-@dataclass
-class Departure(Service):
-    etd: str = ""
-    std: str = ""
 
 
 class Huxley:
