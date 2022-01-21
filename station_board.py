@@ -1,7 +1,8 @@
 """Display plain-text table of upcoming departures from a named station."""
 import datetime as dt
-from urllib.parse import urljoin
+import logging
 from dataclasses import dataclass
+from urllib.parse import urljoin
 
 import bleach
 import click
@@ -41,6 +42,8 @@ class Color:
     """Constants for color names."""
 
     YELLOW: str = "#e2dc84"
+    BACKLIGHT: str = "#231e0c"
+    WHITE: str = "#ffffff"
 
 
 def get_train_services(
@@ -53,18 +56,18 @@ def get_train_services(
         response: requests.models.Response = requests.get(url)
         train_services = response.json()
     except ValueError as error:
-        print(f'Error: No listed train services for CRS code "{crs}". ')
+        logging.warning(f'CRS code "{crs}" does not exist. ')
         raise SystemExit from error
     return train_services
 
 
 def draw_headers(draw: ImageDraw.ImageDraw, location: str):
     """Draw headers for departure board."""
-    draw.text((Display.MARGIN - 4, 14), "Time", "white", Font.INTER_M, "la")
-    draw.text((Display.MARGIN + 96, 14), "Destination", "white", Font.INTER_M, "la")
-    draw.text((Display.WIDTH - 224, 14), "Plat", "white", Font.INTER_M, "ra")
-    draw.text((Display.WIDTH - 48, 14), "Expected", "white", Font.INTER_M, "ra")
-    draw.text((400, 432), location, "white", Font.INTER_L, anchor="ma")
+    draw.text((Display.MARGIN - 4, 14), "Time", Color.WHITE, Font.INTER_M, "la")
+    draw.text((Display.MARGIN + 96, 14), "Destination", Color.WHITE, Font.INTER_M, "la")
+    draw.text((Display.WIDTH - 224, 14), "Plat", Color.WHITE, Font.INTER_M, "ra")
+    draw.text((Display.WIDTH - 48, 14), "Expected", Color.WHITE, Font.INTER_M, "ra")
+    draw.text((400, 432), location, Color.WHITE, Font.INTER_L, anchor="ma")
 
 
 def draw_timestamp(draw: ImageDraw.ImageDraw, generated_at: str) -> None:
@@ -95,7 +98,7 @@ def draw_led_display(draw: ImageDraw.ImageDraw, lines: int = 10):
         offset: int = 60 + (i * Display.LINE_HEIGHT)
         for x in range(Display.LEFT, Display.RIGHT, 3):
             for y in range(offset, offset + 26, 3):
-                draw.ellipse([(x, y), (x + 2, y + 2)], fill="#231e0c")
+                draw.ellipse([(x, y), (x + 2, y + 2)], fill=Color.BACKLIGHT)
 
 
 def draw_led(
