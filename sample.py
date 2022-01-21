@@ -14,26 +14,26 @@ def get_departures(crs: str) -> None:
     station = Huxley(crs=crs, rows=10, endpoint="departures")
     yellow = Style(color="#e2dc84")
 
-    board = Table(box=box.SIMPLE_HEAVY, style="on black")
+    board = Table(box=box.SIMPLE_HEAVY, style="on black", highlight=True)
     board.add_column("Time", justify="left", style=yellow, no_wrap=True)
-    board.add_column(
-        "Destination", justify="left", style=yellow, width=32, no_wrap=True
-    )
+    board.add_column("Destination", justify="left", style=yellow, width=32)
     board.add_column("Plat", justify="right", style=yellow, no_wrap=True)
     board.add_column("Expected", justify="right", style=yellow, no_wrap=True)
 
     if station.train_services is not None:
         for service in station.train_services:
+            destination = Table(box=None, show_header=False, pad_edge=False)
+            destination.add_column("", justify="left", style=yellow, no_wrap=True)
+            destination.add_row(service.destination)
+
             if service.via is not None:
-                destination = Table(
-                    box=None,
-                    show_header=False,
-                    pad_edge=False,
+                destination.add_row(f"[italic]{service.via}")
+            if service.is_cancelled:
+                destination.add_row(
+                    f"[red]{service.cancel_reason.partition('because of a')[2].strip().capitalize()}"
                 )
-                destination.add_row(service.destination)
-                destination.add_row(service.via)
-            else:
-                destination = service.destination
+                service.etd = f"[red]{service.etd}[/red]"
+
             board.add_row(service.std, destination, service.platform, service.etd)
 
     console = Console()

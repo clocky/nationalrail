@@ -24,6 +24,7 @@ class Service:
     platform: str = ""
     is_cancelled: bool = False
     cancel_reason: str = ""
+    delay_reason: str = ""
     via: str = ""
 
 
@@ -35,9 +36,6 @@ class Huxley:
         self.rows: int = rows
         self.expand: bool = expand
         self.endpoint: str = endpoint
-        self.services = self.get_services()
-        self.train_services = self.get_train_services()
-        self.nrcc_messages = self.get_nrcc_messages()
         return None
 
     @property
@@ -51,7 +49,8 @@ class Huxley:
         else:
             self._crs = value
 
-    def get_services(self) -> dict:
+    @property
+    def services(self) -> dict:
         """Get train services for a known CRS code."""
         services: dict = {}
         url: str = urljoin(Server.BASE, f"/{self.endpoint}/{self.crs}/{self.rows}")
@@ -64,9 +63,9 @@ class Huxley:
             raise SystemExit from error
         return services
 
-    def get_train_services(self) -> list:
+    @property
+    def train_services(self) -> list:
         train_services: list = []
-        print(self.services)
         if self.services["trainServices"] is not None:
             for train_service in self.services["trainServices"]:
                 service = Service()
@@ -76,12 +75,14 @@ class Huxley:
                 service.destination = train_service["destination"][0]["locationName"]
                 service.is_cancelled = train_service["isCancelled"]
                 service.cancel_reason = train_service["cancelReason"]
+                service.delay_reason = train_service["delayReason"]
                 service.platform = train_service["platform"]
                 service.via = train_service["destination"][0]["via"]
                 train_services.append(service)
         return train_services
 
-    def get_nrcc_messages(self) -> list:
+    @property
+    def nrcc_messages(self) -> list:
         nrcc_messages: list = []
         if self.services["nrccMessages"] is not None:
             for service in self.services["nrccMessages"]:
