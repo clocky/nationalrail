@@ -7,7 +7,6 @@ from urllib.parse import urljoin
 import bleach
 import dateutil.parser
 import requests
-from transformers import data
 
 
 @dataclass
