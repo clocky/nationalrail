@@ -1,64 +1,10 @@
 """Display plain-text table of upcoming departures from a named station."""
-import datetime as dt
-import logging
-from dataclasses import dataclass
-from urllib.parse import urljoin
-
-import bleach
 import click
-import dateutil.parser
-import requests
+import dateutil
+import datetime as dt
 from PIL import Image, ImageDraw, ImageFont
 
-API = "https://huxley2.azurewebsites.net"
-
-
-@dataclass
-class Font:
-    """Constants for font names."""
-
-    DOTMATRIX = ImageFont.truetype("./fonts/Dot Matrix Regular.ttf", 30)
-    DOTMATRIX_BOLD = ImageFont.truetype("./fonts/Dot Matrix Bold.ttf", 30)
-    DOTMATRIX_BOLD_TALL = ImageFont.truetype("./fonts/Dot Matrix Bold Tall.ttf", 30)
-    INTER_M = ImageFont.truetype("./fonts/Inter-Bold.otf", 26)
-    INTER_L = ImageFont.truetype("./fonts/Inter-Bold.otf", 36)
-
-
-@dataclass
-class Display:
-    """Constants relevant to the display."""
-
-    WIDTH: int = 800
-    HEIGHT: int = 480
-    MARGIN: int = 48
-    RIGHT: int = WIDTH - MARGIN
-    LEFT: int = MARGIN
-    LINES: int = 7
-    LINE_HEIGHT: int = 38
-
-
-@dataclass
-class Color:
-    """Constants for color names."""
-
-    YELLOW: str = "#e2dc84"
-    BACKLIGHT: str = "#231e0c"
-    WHITE: str = "#ffffff"
-
-
-def get_train_services(
-    crs: str, endpoint: str = "departures", rows: int = 1, expand: bool = False
-) -> dict:
-    """Get train services for a given CRS code."""
-    train_services: dict = {}
-    url: str = urljoin(API, f"/{endpoint}/{crs}/{rows}?expand={expand}")
-    try:
-        response: requests.models.Response = requests.get(url)
-        train_services = response.json()
-    except ValueError as error:
-        logging.warning(f'CRS code "{crs}" does not exist. ')
-        raise SystemExit from error
-    return train_services
+from nationalrail import Color, Display, Font, Huxley
 
 
 def draw_headers(draw: ImageDraw.ImageDraw, location: str):
@@ -82,10 +28,9 @@ def draw_timestamp(draw: ImageDraw.ImageDraw, generated_at: str) -> None:
 def draw_nrcc_messages(draw: ImageDraw.ImageDraw, nrcc_messages: list) -> None:
     """Draw any National Rail Communication Centre (NRCC) messages."""
     offset: int = 60
-    message: str = nrcc_messages[0]["value"]
-    sanitized: str = bleach.clean(message, tags=[], strip=True).strip()
+    message: str = nrcc_messages[0]
     lines = get_multiline_text(
-        sanitized, Font.DOTMATRIX, Display.WIDTH - (Display.MARGIN * 4)
+        message, Font.DOTMATRIX, Display.WIDTH - (Display.MARGIN * 4)
     )
     for line in lines:
         offset = offset + Display.LINE_HEIGHT
@@ -117,13 +62,13 @@ def draw_services(draw: ImageDraw.ImageDraw, services: list):
         offset = 60 + (line * Display.LINE_HEIGHT)
 
         # Draw the scheduled time of departure
-        if service["std"] is not None:
-            draw_led(draw, (Display.LEFT, offset), service["std"])
+        if service.std:
+            draw_led(draw, (Display.LEFT, offset), service.std)
 
         # Draw the destination
-        if service["destination"] is not None:
-            destination: str = service["destination"][0]["locationName"]
-            via: str = service["destination"][0]["via"]
+        if service.destination:
+            destination: str = service.destination
+            via: str = service.via
 
             draw_led(draw, (Display.LEFT + 100, offset), destination)
             if via is not None and line < Display.LINES:
@@ -131,17 +76,17 @@ def draw_services(draw: ImageDraw.ImageDraw, services: list):
                 line = line + 1
 
         # Draw the platform
-        if service["platform"] is not None:
-            draw_led(draw, (Display.WIDTH - 224, offset), service["platform"], "rt")
+        if service.platform:
+            draw_led(draw, (Display.WIDTH - 224, offset), service.platform, "rt")
 
         # Draw the estimated time of departure
-        if service["etd"] is not None:
-            etd: str = service["etd"]
+        if service.etd:
+            etd: str = service.etd
             draw_led(draw, (Display.WIDTH - Display.MARGIN, offset), etd, "rt")
 
             offset = 60 + (line * Display.LINE_HEIGHT)
-            if service["delayReason"] is not None:
-                delay_reason = service["delayReason"].partition("delayed by")
+            if service.delay_reason:
+                delay_reason = service.delay_reason.partition("delayed by")
                 reason = f"Service delayed due to {delay_reason[2].strip()}"
                 lines = get_multiline_text(reason, Font.DOTMATRIX, 432)
                 for number, text in enumerate(lines):
@@ -154,8 +99,8 @@ def draw_services(draw: ImageDraw.ImageDraw, services: list):
                     )
                     line = line + 1
 
-            elif etd == "Cancelled" and service["cancelReason"] is not None:
-                cancel_reason = service["cancelReason"].partition("because of")
+            elif etd == "Cancelled" and service.cancel_reason:
+                cancel_reason = service.cancel_reason.partition("because of")
                 reason = f"Service cancelled due to {cancel_reason[2].strip()}"
 
                 if line < Display.LINES:
@@ -179,25 +124,25 @@ def draw_services(draw: ImageDraw.ImageDraw, services: list):
             break
 
 
-def draw_station_board(services: dict) -> None:
+def draw_station_board(services) -> None:
     """Render station information to PNG using Pillow library."""
     img = Image.new("RGB", (Display.WIDTH, Display.HEIGHT))
     draw = ImageDraw.Draw(img)
 
-    draw_headers(draw, services["locationName"])
+    draw_headers(draw, services.location_name)
     draw_led_display(draw, lines=10)
 
-    if services["trainServices"] is not None:
-        draw_services(draw, services["trainServices"])
-    elif services["busServices"] is not None:
-        draw_services(draw, services["busServices"])
-    elif services["nrccMessages"] is not None:
-        draw_nrcc_messages(draw, services["nrccMessages"])
+    if services.train_services:
+        draw_services(draw, services.train_services)
+    elif services.bus_services:
+        draw_services(draw, services.bus_services)
+    elif services.nrcc_messages:
+        draw_nrcc_messages(draw, services.nrcc_messages)
     else:
         message = "Please Check Timetable for Services"
         draw_led(draw, (400, 174), message, "mt")
 
-    draw_timestamp(draw, services["generatedAt"])
+    draw_timestamp(draw, services.generated_at)
     img.save("./signage.png")
 
 
@@ -226,7 +171,7 @@ def get_multiline_text(text: str, font: ImageFont.FreeTypeFont, max_width: int) 
 @click.option("--crs", default="wok", help="CRS code for station.")
 def get_departures(crs: str) -> None:
     """Display plain-text table of upcoming departures from a named station."""
-    services = get_train_services(crs=crs, rows=10, expand=False)
+    services = Huxley(crs=crs, rows=10, expand=False)
     draw_station_board(services)
 
 
