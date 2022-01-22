@@ -20,7 +20,7 @@ def get_departures(crs: str) -> None:
     board.add_column("Plat", justify="right", style=yellow, no_wrap=True)
     board.add_column("Expected", justify="right", style=yellow, no_wrap=True)
 
-    if station.train_services is not None:
+    if station.train_services:
         for service in station.train_services:
             destination = Table(box=None, show_header=False, pad_edge=False)
 
