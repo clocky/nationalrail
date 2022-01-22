@@ -43,7 +43,7 @@ class Huxley:
     @crs.setter
     def crs(self, value: str):
         if len(value) < 3:
-            raise ValueError(f"CRS code must be at least 3 characters long.")
+            raise ValueError("CRS code must be at least 3 characters long.")
         else:
             self._crs = value
 
