@@ -1,7 +1,6 @@
 import datetime
 import logging
 from dataclasses import dataclass
-from sys import settrace
 from urllib.parse import urljoin
 
 import bleach
