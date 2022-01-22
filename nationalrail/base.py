@@ -48,6 +48,14 @@ class Huxley:
             self._crs = value
 
     @property
+    def generated_at(self) -> str:
+        return self.services["generatedAt"]
+
+    @property
+    def location_name(self) -> str:
+        return self.services["locationName"]
+
+    @property
     def services(self) -> dict:
         """Get train services for a known CRS code."""
         services: dict = {}
@@ -78,6 +86,24 @@ class Huxley:
                 service.via = train_service["destination"][0]["via"]
                 train_services.append(service)
         return train_services
+
+    @property
+    def bus_services(self) -> list:
+        bus_services: list = []
+        if self.services["busServices"] is not None:
+            for bus_service in self.services["busServices"]:
+                service = Service()
+                service.etd = bus_service["etd"]
+                service.std = bus_service["std"]
+                service.origin = bus_service["origin"][0]["locationName"]
+                service.destination = bus_service["destination"][0]["locationName"]
+                service.is_cancelled = bus_service["isCancelled"]
+                service.cancel_reason = bus_service["cancelReason"]
+                service.delay_reason = bus_service["delayReason"]
+                service.platform = bus_service["platform"]
+                service.via = bus_service["destination"][0]["via"]
+                bus_services.append(service)
+        return bus_services
 
     @property
     def nrcc_messages(self) -> list:
