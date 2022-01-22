@@ -1,6 +1,7 @@
 """Display plain-text table of upcoming departures from a named station."""
 import click
 import dateutil
+import datetime as dt
 from PIL import Image, ImageDraw, ImageFont
 
 from nationalrail import Color, Display, Font, Huxley
