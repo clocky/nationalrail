@@ -1,4 +1,5 @@
 import datetime
+from lib2to3.refactor import get_all_fix_names
 import logging
 from dataclasses import dataclass
 from urllib.parse import urljoin
@@ -6,6 +7,7 @@ from urllib.parse import urljoin
 import bleach
 import dateutil.parser
 import requests
+from decouple import config
 
 
 @dataclass
@@ -34,6 +36,7 @@ class Huxley:
         self.rows: int = rows
         self.expand: bool = expand
         self.endpoint: str = endpoint
+        self.services = self.get_services()
         return None
 
     @property
@@ -47,6 +50,19 @@ class Huxley:
         else:
             self._crs = value
 
+    def get_services(self) -> dict:
+        services: dict = {}
+        url: str = urljoin(Server.BASE, f"/{self.endpoint}/{self.crs}/{self.rows}")
+        params = {"expand": self.expand, "accessToken": config("ACCESS_TOKEN")}
+        try:
+            response: requests.models.Response = requests.get(url, params)
+            logging.debug(response.url)
+            services = response.json()
+        except ValueError as error:
+            logging.warning(f'CRS code "{self.crs}" not found. ')
+            raise SystemExit from error
+        return services
+
     @property
     def generated_at(self) -> str:
         return self.services["generatedAt"]
@@ -54,20 +70,6 @@ class Huxley:
     @property
     def location_name(self) -> str:
         return self.services["locationName"]
-
-    @property
-    def services(self) -> dict:
-        """Get train services for a known CRS code."""
-        services: dict = {}
-        url: str = urljoin(Server.BASE, f"/{self.endpoint}/{self.crs}/{self.rows}")
-        params = {"expand": self.expand}
-        try:
-            response: requests.models.Response = requests.get(url, params)
-            services = response.json()
-        except ValueError as error:
-            logging.warning(f'CRS code "{self.crs}" not found. ')
-            raise SystemExit from error
-        return services
 
     @property
     def train_services(self) -> list:
