@@ -1,5 +1,4 @@
 import datetime
-from lib2to3.refactor import get_all_fix_names
 import logging
 from dataclasses import dataclass
 from urllib.parse import urljoin
@@ -7,7 +6,7 @@ from urllib.parse import urljoin
 import bleach
 import dateutil.parser
 import requests
-from decouple import config
+from decouple import config, UndefinedValueError  # type: ignore
 
 
 @dataclass
@@ -53,14 +52,24 @@ class Huxley:
     def get_services(self) -> dict:
         services: dict = {}
         url: str = urljoin(Server.BASE, f"/{self.endpoint}/{self.crs}/{self.rows}")
-        params = {"expand": self.expand, "accessToken": config("ACCESS_TOKEN")}
+        params = {"expand": str(self.expand)}
+
+        # Append access token to the query if found in environment variables.
+        try:
+            access_token: str = config("ACCESS_TOKEN")
+            params.update({"accessToken": access_token})
+        except UndefinedValueError as error:
+            logging.warning(error)
+            raise SystemExit from error
+
+        # Attempt to to retrieve the data from the API.
         try:
             response: requests.models.Response = requests.get(url, params)
-            logging.debug(response.url)
             services = response.json()
         except ValueError as error:
             logging.warning(f'CRS code "{self.crs}" not found. ')
             raise SystemExit from error
+
         return services
 
     @property
