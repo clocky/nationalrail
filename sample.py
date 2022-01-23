@@ -31,6 +31,9 @@ def get_departures(crs: str) -> None:
                 destination.add_row(service.cancel_reason)
 
             board.add_row(service.std, destination, service.platform, service.etd)
+    else:
+        board.add_row()
+        board.add_row("", "Check timetable for services")
 
     console = Console()
     console.print(board)
