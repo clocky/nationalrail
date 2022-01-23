@@ -143,7 +143,7 @@ def draw_station_board(services) -> None:
         draw_led(draw, (400, 174), message, "mt")
 
     draw_timestamp(draw, services.generated_at)
-    img.save("./signage.png")
+    img.save("./dist/station.png")
 
 
 def get_multiline_text(text: str, font: ImageFont.FreeTypeFont, max_width: int) -> list:
