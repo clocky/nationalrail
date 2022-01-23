@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from PIL import Image, ImageDraw, ImageFont
+from PIL import ImageFont
 
 
 @dataclass
