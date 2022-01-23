@@ -21,16 +21,16 @@ def get_departures(crs: str) -> None:
     board.add_column("Expected", justify="right", style=yellow, no_wrap=True)
 
     if station.train_services:
-        for service in station.train_services:
+        for train in station.train_services:
             destination = Table(box=None, show_header=False, pad_edge=False)
 
-            destination.add_row(service.destination)
-            if service.via is not None:
-                destination.add_row(service.via)
-            if service.is_cancelled:
-                destination.add_row(service.cancel_reason)
+            destination.add_row(train.destination)
+            if train.via is not None:
+                destination.add_row(train.via)
+            if train.is_cancelled:
+                destination.add_row(train.cancel_reason)
 
-            board.add_row(service.std, destination, service.platform, service.etd)
+            board.add_row(train.std, destination, train.platform, train.etd)
     elif station.nrcc_messages:
         for message in station.nrcc_messages:
             board.add_row("", message)
