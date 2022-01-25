@@ -16,7 +16,7 @@ def get_departures(crs: str) -> None:
     yellow = Style(color="#e2dc84")
     console = Console(width=64)
 
-    board = Table(box=box.SIMPLE_HEAVY)
+    board = Table(box=box.SIMPLE_HEAVY, title=station.location_name)
     board.add_column("Time", justify="left", style=yellow, no_wrap=True)
     board.add_column("Destination", justify="left", style=yellow, width=32)
     board.add_column("Plat", justify="right", style=yellow, no_wrap=True)
