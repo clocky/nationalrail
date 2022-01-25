@@ -38,9 +38,8 @@ def get_departures(crs: str) -> None:
 
     console.print(board)
     if board.row_count == 0:
-        console.print(
-            "Please check timetable for services", style=yellow, justify="center"
-        )
+        no_services: str = "Please check timetable for services"
+        console.print(no_services, style=yellow, justify="center")
 
 
 if __name__ == "__main__":
