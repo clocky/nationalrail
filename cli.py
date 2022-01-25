@@ -29,7 +29,7 @@ def get_departures(crs: str) -> None:
             if train.via is not None:
                 destination.add_row(train.via)
             if train.is_cancelled and train.cancel_reason:
-                destination.add_row(train.cancel_reason)
+                destination.add_row(train.cancel_reason_short)
 
             board.add_row(train.std, destination, train.platform, train.etd)
     elif station.nrcc_messages:

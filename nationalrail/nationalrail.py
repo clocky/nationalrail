@@ -26,6 +26,16 @@ class Service:
     delay_reason: str = ""
     via: str = ""
 
+    @property
+    def cancel_reason_short(self) -> str:
+        reason = self.cancel_reason.partition("because of")
+        return f"Cancelled due to {reason[2].lstrip()}"
+
+    @property
+    def delay_reason_short(self) -> str:
+        reason = self.delay_reason.partition("because of")
+        return f"Delayed due to {reason[2].lstrip()}"
+
 
 class Huxley:
     def __init__(
