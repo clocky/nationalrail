@@ -284,6 +284,14 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
+name = "types-bleach"
+version = "4.1.4"
+description = "Typing stubs for bleach"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "types-pillow"
 version = "9.0.5"
 description = "Typing stubs for Pillow"
@@ -331,7 +339,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "cf545fd688eba418643566e967b8e75448b9294755e962f4a723e51550e9eefa"
+content-hash = "e7f18fa6fdfd6fd9877c867d29047f8076d5d828ea6accfb556486c147d99ea5"
 
 [metadata.files]
 black = [
@@ -485,6 +493,10 @@ six = [
 tomli = [
     {file = "tomli-1.2.3-py3-none-any.whl", hash = "sha256:e3069e4be3ead9668e21cb9b074cd948f7b3113fd9c8bba083f48247aab8b11c"},
     {file = "tomli-1.2.3.tar.gz", hash = "sha256:05b6166bff487dc068d322585c7ea4ef78deed501cc124060e0f238e89a9231f"},
+]
+types-bleach = [
+    {file = "types-bleach-4.1.4.tar.gz", hash = "sha256:2d30c2c4fb6854088ac636471352c9a51bf6c089289800d2a8060820a01cd43a"},
+    {file = "types_bleach-4.1.4-py3-none-any.whl", hash = "sha256:edffe173ed6d7b6f3543036a96204a9319c3bf6c3645917b14274e43f000cc9b"},
 ]
 types-pillow = [
     {file = "types-Pillow-9.0.5.tar.gz", hash = "sha256:dcc4a2138dce6ec7dc62b896e56dc3458f1695004ff3d5f8e389b58c72648548"},
