@@ -2,6 +2,7 @@ from nationalrail import Huxley
 from rich.table import Table
 from rich.console import Console
 from rich.style import Style
+from rich.padding import Padding
 from rich import box
 
 import click
@@ -32,14 +33,17 @@ def get_departures(crs: str) -> None:
                 destination.add_row(train.cancel_reason_short)
 
             board.add_row(train.std, destination, train.platform, train.etd)
-    elif station.nrcc_messages:
-        for message in station.nrcc_messages:
-            board.add_row("", message)
 
     console.print(board)
+
     if board.row_count == 0:
-        no_services: str = "Please check timetable for services"
-        console.print(no_services, style=yellow, justify="center")
+        if station.nrcc_messages:
+            for message in station.nrcc_messages:
+                output = Padding(message, (0, 4, 1, 4))
+                console.print(output, style=yellow, justify="center")
+        else:
+            no_services: str = "Please check timetable for services\n"
+            console.print(no_services, style=yellow, justify="center")
 
 
 if __name__ == "__main__":
