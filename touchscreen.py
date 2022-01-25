@@ -2,6 +2,7 @@
 import click
 import dateutil
 import datetime as dt
+from typing import Tuple
 from PIL import Image, ImageDraw, ImageFont
 
 from nationalrail import Color, Display, Font, Huxley
@@ -48,7 +49,7 @@ def draw_led_display(draw: ImageDraw.ImageDraw, lines: int = 10):
 
 def draw_led(
     draw: ImageDraw.ImageDraw,
-    xy: tuple[float, float],
+    xy: Tuple[float,float],
     text: str,
     align: str = "lt",
     font=Font.DOTMATRIX,
