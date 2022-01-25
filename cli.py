@@ -1,11 +1,11 @@
-from nationalrail import Huxley
-from rich.table import Table
-from rich.console import Console
-from rich.style import Style
-from rich.padding import Padding
-from rich import box
-
 import click
+from rich import box
+from rich.console import Console
+from rich.padding import Padding
+from rich.style import Style
+from rich.table import Table
+
+from nationalrail import Huxley
 
 
 @click.command()
