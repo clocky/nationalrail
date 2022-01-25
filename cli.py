@@ -24,13 +24,21 @@ def get_departures(crs: str) -> None:
 
     if station.train_services:
         for train in station.train_services:
-            destination = Table(box=None, show_header=False, pad_edge=False)
+            train.std = f"[white]{train.std}[/white]"
 
+            destination = Table(box=None, show_header=False, pad_edge=False)
             destination.add_row(train.destination)
+
             if train.via is not None:
                 destination.add_row(train.via)
             if train.is_cancelled and train.cancel_reason:
-                destination.add_row(train.cancel_reason_short)
+                reason: str = f"[white]{train.cancel_reason_short}[/white]"
+                destination.add_row(reason)
+
+            if train.etd == "On time":
+                train.etd = f"[green]{train.etd}[/green]"
+            if train.is_cancelled:
+                train.etd = f"[red]{train.etd}[/red]"
 
             board.add_row(train.std, destination, train.platform, train.etd)
 
