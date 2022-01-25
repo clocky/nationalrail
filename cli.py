@@ -13,8 +13,9 @@ def get_departures(crs: str) -> None:
     """Display plain-text table of upcoming departures from a named station."""
     station = Huxley(crs=crs, rows=10, endpoint="departures")
     yellow = Style(color="#e2dc84")
+    console = Console(width=64)
 
-    board = Table(box=box.SIMPLE_HEAVY, style="on black")
+    board = Table(box=box.SIMPLE_HEAVY)
     board.add_column("Time", justify="left", style=yellow, no_wrap=True)
     board.add_column("Destination", justify="left", style=yellow, width=32)
     board.add_column("Plat", justify="right", style=yellow, no_wrap=True)
@@ -34,12 +35,12 @@ def get_departures(crs: str) -> None:
     elif station.nrcc_messages:
         for message in station.nrcc_messages:
             board.add_row("", message)
-    else:
-        board.add_row()
-        board.add_row("", "Check timetable for services")
 
-    console = Console()
     console.print(board)
+    if board.row_count == 0:
+        console.print(
+            "Please check timetable for services", style=yellow, justify="center"
+        )
 
 
 if __name__ == "__main__":
