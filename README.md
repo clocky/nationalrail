@@ -5,18 +5,24 @@ API to display upcoming rail departures for a given railway station in the UK.
 
 ## Installation
 
+### Install Poetry
+
 ```bash
-python3 -m pip install inky --no-dependencies
-python3 -m pip install -r requirements.txt
+curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
 ```
 
-### Optional libraries for type hint checking
+### Install dependencies
 
 ```bash
-python3 -m pip install types-python-dateutil
-python3 -m pip install types-requests
-python3 -m pip install types-bleach
-python3 -m pip install types-Pillow
+poetry install
+```
+
+### Environment variable
+
+Create a local `.env` file with your National Rail Darwin Lite Webservice access token.
+
+```text
+ACCESS_TOKEN=<token>
 ```
 
 ## Usage
@@ -24,7 +30,7 @@ python3 -m pip install types-Pillow
 The following script will show upcoming departures from **Woking**, which has the CRS Station Code, `"WOK"`.
 
 ```bash
-python3 nationalrail.py --crs=WOK
+poetry run python cli.py --crs=wok
 ```
 
 ## Sample output
