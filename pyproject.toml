@@ -22,6 +22,7 @@ types-Pillow = "^9.0.5"
 flake8 = "^4.0.1"
 black = "^21.12b0"
 types-bleach = "^4.1.4"
+types-requests = "^2.27.7"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
