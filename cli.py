@@ -47,8 +47,8 @@ def get_departures(crs: str) -> None:
     if board.row_count == 0:
         if station.nrcc_messages:
             for message in station.nrcc_messages:
-                output = Padding(message, (0, 4, 1, 4))
-                console.print(output, style=yellow, justify="center")
+                output = Padding(message, (0, 7, 1, 7))
+                console.print(output, style=yellow, justify="center", width=60)
         else:
             no_services: str = "Please check timetable for services\n"
             console.print(no_services, style=yellow, justify="center")
