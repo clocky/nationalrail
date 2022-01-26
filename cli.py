@@ -17,10 +17,10 @@ def get_departures(crs: str) -> None:
     console = Console(width=64)
 
     board = Table(box=box.SIMPLE_HEAVY, title=station.location_name)
-    board.add_column("Time", justify="left", style=yellow, no_wrap=True)
+    board.add_column("Time", justify="left", style="white", no_wrap=True)
     board.add_column("Destination", justify="left", style=yellow, width=32)
-    board.add_column("Plat", justify="right", style=yellow, no_wrap=True)
-    board.add_column("Expected", justify="right", style=yellow, no_wrap=True)
+    board.add_column("Plat", justify="right", style="white", no_wrap=True)
+    board.add_column("Expected", justify="right", style="white", no_wrap=True)
 
     if station.train_services:
         for train in station.train_services:
@@ -31,12 +31,15 @@ def get_departures(crs: str) -> None:
 
             if train.via is not None:
                 destination.add_row(train.via)
-            if train.is_cancelled and train.cancel_reason:
-                reason: str = f"[white]{train.cancel_reason_short}[/white]"
-                destination.add_row(reason)
 
-            if train.etd == "On time":
-                train.etd = f"[green]{train.etd}[/green]"
+            if train.delay_reason:
+                delay: str = f"[white]{train.delay_reason}[/white]"
+                destination.add_row(delay)
+
+            if train.is_cancelled and train.cancel_reason:
+                cancellation: str = f"[white]{train.cancel_reason_short}[/white]"
+                destination.add_row(cancellation)
+
             if train.is_cancelled:
                 train.etd = f"[red]{train.etd}[/red]"
 
