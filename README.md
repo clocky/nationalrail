@@ -8,7 +8,7 @@ API to display upcoming rail departures for a given railway station in the UK.
 ### Install Poetry
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+curl -sSL https://install.python-poetry.org | python3 -
 ```
 
 ### Install dependencies
