@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="/style/departures.css" />
+    <title>Departures from {{station.location_name}}</title>
+  </head>
+  <body class="bg-dark">
+    <div class="container">
+      <table class="table table-dark">
+        <colgroup></colgroup>
+        <thead>
+          <tr>
+            <th scope="col" class="text-start">Time</th>
+            <th scope="col" class="text-start">Destination</th>
+            <th scope="col" class="text-end">Plat</th>
+            <th scope="col" class="text-end">Expected</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for service in station.train_services %}
+          <tr>
+            <td><time>{{ service.std }}</time></td>
+            <td>
+              <a
+                href="/departures/{{service.destination_crs | lower}}"
+                class="text-warning text-decoration-none"
+                >{{ service.destination }}</a
+              >
+            </td>
+            <td class="text-end">
+              {% if service.platform %} {{ service.platform }} {% else %} - {%
+              endif %}
+            </td>
+            <td class="text-end">{{ service.etd }}</td>
+          </tr>
+          {% if service.via %}
+          <tr>
+            <td></td>
+            <td colspan="3">{{ service.via }}</td>
+          </tr>
+          {% endif %} {% if service.is_cancelled and service.cancel_reason %}
+          <tr>
+            <td></td>
+            <td colspan="3">{{ service.cancel_reason }}</td>
+          </tr>
+          {% endif %} {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
