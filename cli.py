@@ -16,32 +16,37 @@ def get_departures(crs: str) -> None:
     yellow = Style(color="#e2dc84")
     console = Console(width=64)
 
-    board = Table(box=box.SIMPLE_HEAVY, title=station.location_name)
-    board.add_column("Time", justify="left", style="white", no_wrap=True)
-    board.add_column("Destination", justify="left", style=yellow, width=32)
-    board.add_column("Plat", justify="right", style="white", no_wrap=True)
-    board.add_column("Expected", justify="right", style="white", no_wrap=True)
+    board = Table(
+        box=box.SIMPLE,
+        style="white on black",
+        header_style="white on navy_blue",
+        collapse_padding=True
+    )
+    board.add_column("Time", justify="left", style="on black", width=5)
+    board.add_column("Destination", justify="left", style="gold3 on black", width=32)
+    board.add_column("Plat", justify="right", style="on black", no_wrap=True, width=4)
+    board.add_column("Expected", justify="right", style="on black", width=10)
 
     if station.train_services:
         for train in station.train_services:
-            train.std = f"[white]{train.std}[/white]"
 
             destination = Table(box=None, show_header=False, pad_edge=False)
             destination.add_row(train.destination)
 
             if train.via is not None:
-                destination.add_row(train.via)
+                via: str = f"[white]{train.via}[/white]"
+                destination.add_row(via)
 
-            if train.delay_reason:
-                delay: str = f"[white]{train.delay_reason}[/white]"
+            if train.delay_reason and not train.cancel_reason:
+                delay: str = f"[white]{train.delay_reason_short}[/white]"
                 destination.add_row(delay)
 
-            if train.is_cancelled and train.cancel_reason:
-                cancellation: str = f"[white]{train.cancel_reason_short}[/white]"
-                destination.add_row(cancellation)
+            if train.platform is None:
+                train.platform = "-"
 
-            if train.is_cancelled:
-                train.etd = f"[red]{train.etd}[/red]"
+            if train.is_cancelled and train.cancel_reason:
+                cancellation: str = f"{train.cancel_reason_short}"
+                destination.add_row(cancellation)
 
             board.add_row(train.std, destination, train.platform, train.etd)
 
@@ -50,11 +55,13 @@ def get_departures(crs: str) -> None:
     if board.row_count == 0:
         if station.nrcc_messages:
             for message in station.nrcc_messages:
-                output = Padding(message, (0, 4, 1, 4))
-                console.print(output, style=yellow, justify="center", width=60)
+                output = Padding(message, (0, 6, 1, 6))
+                console.print(output, style="gold3 on black", justify="center", width=61)
         else:
             no_services: str = "Please check timetable for services\n"
-            console.print(no_services, style=yellow, justify="center")
+            console.print(
+                no_services, style="gold3 on black", justify="center", width=61
+            )
 
 
 if __name__ == "__main__":
