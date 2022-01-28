@@ -19,3 +19,7 @@ def send_fonts(path):
 @app.route("/style/<path:path>")
 def send_css(path):
     return send_from_directory("style", path)
+
+@app.route("/img/<path:path>")
+def send_image(path):
+    return send_from_directory("img", path)
