@@ -38,14 +38,14 @@ def get_departures(crs: str) -> None:
                 destination.add_row(via)
 
             if train.delay_reason and not train.cancel_reason:
-                delay: str = f"[white]{train.delay_reason_short}[/white]"
+                delay: str = f"[white]{train.delay_reason}[/white]"
                 destination.add_row(delay)
 
             if train.platform is None:
                 train.platform = "-"
 
             if train.is_cancelled and train.cancel_reason:
-                cancellation: str = f"{train.cancel_reason_short}"
+                cancellation: str = f"[white]{train.cancel_reason}[/]"
                 destination.add_row(cancellation)
 
             board.add_row(train.std, destination, train.platform, train.etd)
