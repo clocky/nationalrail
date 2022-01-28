@@ -56,12 +56,20 @@
           {% set rows.value = rows.value + 1 %}
           {% endif %} 
           
-          {% if service.is_cancelled and service.cancel_reason and rows.value < 10 %}
-          <tr>
-            <td></td>
-            <td colspan="3">{{ service.cancel_reason_short }}</td>
-          </tr>
-          {% endif %} {% endfor %}
+            {% if service.is_cancelled and service.cancel_reason and rows.value < 10 %}
+            <tr>
+              <td></td>
+              <td colspan="3">{{ service.cancel_reason_short }}</td>
+            </tr>
+            {% endif %} 
+          {% endfor %}
+          {% if rows.value < 10 %}
+            {% for row in range(0, (10 - rows.value)) %}
+              <tr>
+                <td colspan="4">&nbsp;</td>
+              </tr>
+            {% endfor %}
+          {% endif %}
         </tbody>
       </table>
     </div>
