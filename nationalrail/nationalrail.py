@@ -20,6 +20,7 @@ class Service:
     std: str = ""
     origin: str = ""
     destination: str = ""
+    destination_crs: str = ""
     platform: str = ""
     is_cancelled: bool = False
     cancel_reason: str = ""
@@ -100,6 +101,7 @@ class Huxley:
                 service.std = train_service["std"]
                 service.origin = train_service["origin"][0]["locationName"]
                 service.destination = train_service["destination"][0]["locationName"]
+                service.destination_crs = train_service["destination"][0]["crs"]
                 service.is_cancelled = train_service["isCancelled"]
                 service.cancel_reason = train_service["cancelReason"]
                 service.delay_reason = train_service["delayReason"]
