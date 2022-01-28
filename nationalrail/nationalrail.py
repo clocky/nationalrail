@@ -33,7 +33,7 @@ class Service:
 
     @property
     def delay_reason_short(self) -> str:
-        reason = self.delay_reason.partition("because of")
+        reason = self.delay_reason.partition("delayed by a")
         return f"Delayed due to {reason[2].lstrip()}"
 
 
