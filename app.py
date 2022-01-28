@@ -8,7 +8,7 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 @app.route("/departures/<crs>")
 def departures(crs: str):
     station = Huxley(crs=crs, rows=10, endpoint="departures")
-    return render_template("departures.html", station=station)
+    return render_template("departures.jinja", station=station)
 
 
 @app.route("/fonts/<path:path>")

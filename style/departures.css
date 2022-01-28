@@ -6,14 +6,14 @@
   src: url("/fonts/Dot Matrix Regular.ttf") format("truetype");
 }
 table {
-  min-width: 960px;
-  max-height: 480px;
+  width: 800px;
   overflow: none;
   border-collapse: separate;
-  border-spacing: 0 1em;
+  border-spacing: 0 10px;
   background-color: #000;
   border-left: 40px #000 solid;
   border-right: 40px #000 solid;
+  border-bottom: 20px #000 solid;
   table-layout: fixed;
 }
 thead {
@@ -39,7 +39,10 @@ tbody tr {
 tbody tr td {
   padding: 0px;
   vertical-align: top;
+  max-width: 480px;
+  white-space: nowrap;
 }
+
 a {
   text-decoration: none;
   color: var(--yellow);
