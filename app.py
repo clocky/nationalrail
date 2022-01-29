@@ -1,8 +1,13 @@
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, render_template, send_from_directory, redirect
 from nationalrail import Huxley
 
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
+
+
+@app.route("/")
+def default():
+    return redirect("/departures/wok", code=302)
 
 
 @app.route("/departures/<crs>")
@@ -19,6 +24,7 @@ def send_fonts(path):
 @app.route("/style/<path:path>")
 def send_css(path):
     return send_from_directory("style", path)
+
 
 @app.route("/img/<path:path>")
 def send_image(path):
