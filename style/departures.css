@@ -4,17 +4,21 @@
   --white: #ebfdfe;
   --led: #1d2113;
   --light: #868da7;
+  --glow: rgba(255,216,87,0.33)
 }
+
 @font-face {
-  font-family: Dot Matrix Regular;
+  font-family: "Dot Matrix Regular";
   src: url("/fonts/Dot Matrix Regular.ttf") format("truetype");
 }
+
 body {
   background-image: url("/img/photo.jpg");
   background-position: -10px 30px;
   background-size: 1100px;
   background-repeat: no-repeat;
 }
+
 table {
   position: absolute;
   left: 140px;
@@ -30,31 +34,38 @@ table {
   padding: 0px 60px 0px 60px;
   border-top: var(--light) 1px solid;
 }
+
 thead {
   font-family: Helvetica, Arial, sans-serif;
   font-size: 28px;
   color: var(--white);
 }
+
 thead th {
   padding: 5px 0px;
 }
+
 tbody {
   font-family: "Dot Matrix Regular";
+  text-shadow: var(--glow) 0 0 8px;
   font-size: 30px;
   line-height: 30px;
   width: 100%;
   -webkit-font-smoothing: none;
   color: var(--yellow);
 }
+
 tbody tr {
   background-color: var(--led);
 }
+
 tbody tr td {
   padding: 0 0 0 0;
   vertical-align: top;
   max-width: 480px;
   white-space: nowrap;
 }
+
 tfoot tr td {
   font-family: Helvetica, Arial, sans-serif;
   font-size: 44px;
@@ -68,12 +79,15 @@ a {
   text-decoration: none;
   color: var(--yellow);
 }
+
 a:hover {
   color: #fff;
 }
+
 .text-end {
   text-align: right;
 }
+
 .text-start {
   text-align: left;
 }
