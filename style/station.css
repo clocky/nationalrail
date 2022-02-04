@@ -1,0 +1,86 @@
+@import url("root.css");
+
+body {
+    background-color: #303030;
+}
+
+h1, h2, h3 {
+    margin: 0;
+    padding: 0;
+    font-weight: normal;
+    line-height: 36px;
+}
+
+ul {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    align-content: stretch;
+    line-height: 15px;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+ul li {
+    background-color: var(--led);
+    margin-bottom: 4px;
+}
+
+ul li a {
+    color: var(--yellow);
+    text-decoration: none;
+}
+
+ul li a:hover {
+    color: var(--white);
+    text-decoration: none;
+}
+
+li.calling {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.board {
+    float: left;
+    background-color: var(--black);
+    border: 20px solid var(--black);
+    font-family: "Dot Matrix Regular", monospace;
+    color: var(--yellow);
+    font-size: 15px;
+    min-width: 208px;
+    margin-right: 10px;
+}
+
+#station {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 20px;
+    line-height: 20px;
+    background-color: var(--led);
+}
+
+header time {
+    flex: 0;
+}
+
+footer {
+    display: flex;
+    font-family: "Dot Matrix Regular", monospace;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 20px;
+    line-height: 20px;
+    background-color: var(--led);
+}

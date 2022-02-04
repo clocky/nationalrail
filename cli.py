@@ -20,7 +20,7 @@ def get_departures(crs: str) -> None:
         box=box.SIMPLE,
         style="white on black",
         header_style="white on navy_blue",
-        collapse_padding=True
+        collapse_padding=True,
     )
     board.add_column("Time", justify="left", style="on black", width=5)
     board.add_column("Destination", justify="left", style="gold3 on black", width=32)
@@ -56,7 +56,9 @@ def get_departures(crs: str) -> None:
         if station.nrcc_messages:
             for message in station.nrcc_messages:
                 output = Padding(message, (0, 6, 1, 6))
-                console.print(output, style="gold3 on black", justify="center", width=61)
+                console.print(
+                    output, style="gold3 on black", justify="center", width=61
+                )
         else:
             no_services: str = "Please check timetable for services\n"
             console.print(

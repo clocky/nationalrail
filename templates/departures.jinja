@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="/style/departures.css" />
+    <title>Departures from {{station.location_name}}</title>
+  </head>
+
+  <body class="bg-dark">
+    <div class="container">
+      <table class="table table-dark">
+        <colgroup>
+          <col width="14%" />
+          <col width="48%" />
+          <col width="6%" />
+          <col width="25%" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th scope="col" class="text-start">Time</th>
+            <th scope="col" class="text-start">Destination</th>
+            <th scope="col" class="text-end">Plat</th>
+            <th scope="col" class="text-end">Expected</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% set rows = namespace(value=0) %}
+          {% for service in station.train_services %}
+          {{ rows }}
+          {% if rows.value < 10 %}
+            <tr>
+              <td class="text-start"><time>{{ service.std }}</time></td>
+              <td>
+                <a
+                  href="/departures/{{service.destination_crs | lower}}"
+                  class="text-warning text-decoration-none"
+                  >{{ service.destination }}</a
+                >
+              </td>
+              <td class="text-end">
+                {% if service.platform %} 
+                  {{ service.platform }} 
+                {% else %} 
+                  - 
+                {% endif %}
+              </td>
+              <td class="text-end">{{ service.etd }}</td>
+            </tr>
+            {% set rows.value = rows.value + 1 %}
+          {% endif %}
+
+          {% if service.via and rows.value < 10 %}
+            <tr>
+              <td></td>
+              <td colspan="3">{{ service.via }}</td>
+            </tr>
+            {% set rows.value = rows.value + 1 %}
+          {% endif %} 
+          
+          {% if service.is_cancelled and service.cancel_reason and rows.value < 10 %}
+            <tr>
+              <td></td>
+              <td colspan="3">{{ service.cancel_reason_short }}</td>
+            </tr>
+            {% set rows.value = rows.value + 1 %}
+          {% endif %} 
+          {% endfor %}
+          {% if rows.value < 10 %}
+            {% for row in range(0, (10 - rows.value)) %}
+              <tr>
+                <td colspan="4">&nbsp;</td>
+              </tr>
+            {% endfor %}
+          {% endif %}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="4" class="text-center">Departures</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </body>
+</html>

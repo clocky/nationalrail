@@ -1,0 +1,81 @@
+@import url("root.css");
+
+body {
+  background-image: url("/img/photo.jpg");
+  background-position: -10px 30px;
+  background-size: 1100px;
+  background-repeat: no-repeat;
+}
+
+table {
+  position: absolute;
+  left: 140px;
+  top: 180px;
+  opacity: 1;
+  width: 800px;
+  overflow: none;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+  background-color: var(--black);
+  table-layout: fixed;
+  border-radius: 1px;
+  padding: 0px 60px 0px 60px;
+  border-top: var(--light) 1px solid;
+}
+
+thead {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 28px;
+  color: var(--white);
+}
+
+thead th {
+  padding: 5px 0px;
+}
+
+tbody {
+  font-family: "Dot Matrix Regular";
+  text-shadow: var(--glow) 0 0 8px;
+  font-size: 30px;
+  line-height: 30px;
+  width: 100%;
+  -webkit-font-smoothing: none;
+  color: var(--yellow);
+}
+
+tbody tr {
+  background-color: var(--led);
+}
+
+tbody tr td {
+  padding: 0 0 0 0;
+  vertical-align: top;
+  max-width: 480px;
+  white-space: nowrap;
+}
+
+tfoot tr td {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 44px;
+  font-weight: 600;
+  text-align: center;
+  color: #fff;
+  padding: 0px 0px;
+}
+
+a {
+  text-decoration: none;
+  color: var(--yellow);
+}
+
+a:hover {
+  color: #fff;
+}
+
+.text-end {
+  text-align: right;
+}
+
+.text-start {
+  text-align: left;
+}
