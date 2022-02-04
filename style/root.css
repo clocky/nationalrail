@@ -1,0 +1,23 @@
+:root {
+    --yellow: #ffd956;
+    --black: #07060b;
+    --white: #ebfdfe;
+    --led: #1d2113;
+    --light: #868da7;
+    --glow: rgba(255, 216, 87, 0.33)
+}
+
+@font-face {
+    font-family: "Dot Matrix Regular";
+    src: url("/fonts/Dot Matrix Regular.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Dot Matrix Bold";
+    src: url("/fonts/Dot Matrix Bold.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Dot Matrix Bold Tall";
+    src: url("/fonts/Dot Matrix Bold Tall.ttf") format("truetype");
+}

@@ -1,0 +1,67 @@
+<!doctype html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="/style/station.css">
+</head>
+<body>
+<div id="station">
+    {% for service in station.train_services %}
+        <div class="board">
+            <header>
+                <time>{{ service.std }}</time>
+                <span class="platform">
+                    Platform
+                    {% if service.platform == None %}
+                        --
+                    {% else %}
+                        {{ service.platform }}
+                    {% endif %}
+                </span>
+            </header>
+
+            <h2>{{ service.destination }}</h2>
+            {% for point in service.calling_points %}
+                <ul>
+
+                    {% set calling_points = point.callingPoint | length %}
+
+                    {% if service.via %}
+                        <li class="via">{{service.via}}</li>
+                        {% else %}
+                        <li class="via">&nbsp;</li>
+                    {% endif %}
+
+                    <li class="calling">
+                        <span class="calling-at">Calling at:</span>
+                        <span class="page">
+                        Page 1 of 1
+                        </span>
+                    </li>
+
+                    {% for station in point.callingPoint %}
+                        {% if loop.index0 < 16 %}
+                        <li>
+                            {% if loop.index == loop.length and loop.length > 1 %}
+                            &
+                            {% endif %}
+                            <a href="/station/{{station.crs | lower }}">
+                                {{ station.locationName }}
+                            </a>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% for line in range (0, 16 - calling_points )%}
+                        <li>&nbsp;</li>
+                    {% endfor %}
+                </ul>
+            {% endfor %}
+
+            <footer>
+                {{ service.operator }}
+            </footer>
+        </div>
+    {% endfor %}
+</div>
+
+</body>

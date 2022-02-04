@@ -1,6 +1,6 @@
 import datetime
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from urllib.parse import urljoin
 
 import bleach
@@ -26,6 +26,8 @@ class Service:
     cancel_reason: str = ""
     delay_reason: str = ""
     via: str = ""
+    operator: str = ""
+    calling_points: dict = field(default_factory=dict)
 
     @property
     def cancel_reason_short(self) -> str:
@@ -102,10 +104,20 @@ class Huxley:
                 service.origin = train_service["origin"][0]["locationName"]
                 service.destination = train_service["destination"][0]["locationName"]
                 service.destination_crs = train_service["destination"][0]["crs"]
+
+                try:
+                    if train_service["subsequentCallingPoints"] is not None:
+                        service.calling_points = train_service[
+                            "subsequentCallingPoints"
+                        ]
+                except KeyError:
+                    service.calling_points = {}
+
                 service.is_cancelled = train_service["isCancelled"]
                 service.cancel_reason = train_service["cancelReason"]
                 service.delay_reason = train_service["delayReason"]
                 service.platform = train_service["platform"]
+                service.operator = train_service["operator"]
                 service.via = train_service["destination"][0]["via"]
                 train_services.append(service)
         return train_services

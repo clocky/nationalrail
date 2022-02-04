@@ -1,16 +1,4 @@
-:root {
-  --yellow: #ffd956;
-  --black: #07060b;
-  --white: #ebfdfe;
-  --led: #1d2113;
-  --light: #868da7;
-  --glow: rgba(255,216,87,0.33)
-}
-
-@font-face {
-  font-family: "Dot Matrix Regular";
-  src: url("/fonts/Dot Matrix Regular.ttf") format("truetype");
-}
+@import url("root.css");
 
 body {
   background-image: url("/img/photo.jpg");

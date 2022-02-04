@@ -16,6 +16,12 @@ def departures(crs: str):
     return render_template("departures.jinja", station=station)
 
 
+@app.route("/station/<crs>")
+def station(crs: str):
+    station = Huxley(crs=crs, rows=5, endpoint="departures", expand=True)
+    return render_template("station.jinja", station=station)
+
+
 @app.route("/fonts/<path:path>")
 def send_fonts(path):
     return send_from_directory("fonts", path)
