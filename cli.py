@@ -18,12 +18,12 @@ def get_departures(crs: str) -> None:
     console = Console(width=64)
 
     board = Table(
-        box=box.SIMPLE,
+        box=None,
         style="white on black",
         header_style="white on navy_blue",
         collapse_padding=True,
     )
-    board.add_column("Time", justify="left", style="on black", width=5)
+    board.add_column("Time", justify="left", style="on black", width=6)
     board.add_column("Destination", justify="left", style="gold3 on black", width=32)
     board.add_column("Plat", justify="right", style="on black", no_wrap=True, width=4)
     board.add_column("Expected", justify="right", style="on black", width=10)
@@ -58,12 +58,12 @@ def get_departures(crs: str) -> None:
             for message in station.nrcc_messages:
                 output = Padding(message, (0, 6, 1, 6))
                 console.print(
-                    output, style="gold3 on black", justify="center", width=61
+                    output, style="gold3 on black", justify="center", width=57
                 )
         else:
-            no_services: str = "Please check timetable for services\n"
+            no_services: str = "\nPlease check timetable for services\n"
             console.print(
-                no_services, style="gold3 on black", justify="center", width=61
+                no_services, style="gold3 on black", justify="center", width=57
             )
 
 
