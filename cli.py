@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """Show rail departures using the Huxley library."""
 import click
 from rich import box
@@ -14,8 +16,7 @@ from nationalrail import Huxley
 def get_departures(crs: str) -> None:
     """Display plain-text table of upcoming departures from a named station."""
     station = Huxley(crs=crs, rows=10, endpoint="departures")
-    yellow = Style(color="#e2dc84")
-    console = Console(width=64)
+    console = Console(width=80)
 
     board = Table(
         box=None,
@@ -23,10 +24,10 @@ def get_departures(crs: str) -> None:
         header_style="white on navy_blue",
         collapse_padding=True,
     )
-    board.add_column("Time", justify="left", style="on black", width=6)
-    board.add_column("Destination", justify="left", style="gold3 on black", width=32)
-    board.add_column("Plat", justify="right", style="on black", no_wrap=True, width=4)
-    board.add_column("Expected", justify="right", style="on black", width=10)
+    board.add_column("Time", justify="left", style="on black", width=8)
+    board.add_column("Destination", justify="left", style="gold3 on black", width=50)
+    board.add_column("Plat", justify="right", style="on black", no_wrap=True, width=6)
+    board.add_column("Expected", justify="right", style="on black", width=12)
 
     if station.train_services:
         for train in station.train_services:
@@ -56,14 +57,14 @@ def get_departures(crs: str) -> None:
     if board.row_count == 0:
         if station.nrcc_messages:
             for message in station.nrcc_messages:
-                output = Padding(message, (0, 6, 1, 6))
+                output = Padding(message, (1, 10, 1, 10))
                 console.print(
-                    output, style="gold3 on black", justify="center", width=57
+                    output, style="gold3 on black", justify="center", width=80
                 )
         else:
             no_services: str = "\nPlease check timetable for services\n"
             console.print(
-                no_services, style="gold3 on black", justify="center", width=57
+                no_services, style="gold3 on black", justify="center", width=80
             )
 
 
