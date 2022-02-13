@@ -1,3 +1,4 @@
+"""Retrieve and parse data from the National Rail API."""
 import datetime
 import logging
 from dataclasses import dataclass, field
@@ -11,11 +12,15 @@ from decouple import config, UndefinedValueError  # type: ignore
 
 @dataclass
 class Server:
+    """A server to connect to."""
+
     BASE: str = "https://huxley2.azurewebsites.net"
 
 
 @dataclass
 class Service:
+    """A service."""
+
     etd: str = ""
     std: str = ""
     origin: str = ""
@@ -31,19 +36,24 @@ class Service:
 
     @property
     def cancel_reason_short(self) -> str:
+        """Return a truncated string of the cancel reason."""
         reason = self.cancel_reason.partition("because of")
         return f"Cancelled due to {reason[2].lstrip()}"
 
     @property
     def delay_reason_short(self) -> str:
+        """Return a truncated string of the delay reason."""
         reason = self.delay_reason.partition("delayed by a")
         return f"Delayed due to {reason[2].lstrip()}"
 
 
 class Huxley:
+    """A class to retrieve and parse data from the Huxley API."""
+
     def __init__(
         self, crs: str, rows: int, expand: bool = False, endpoint: str = "departures"
     ) -> None:
+        """Initialise the Huxley class."""
         self.crs: str = crs
         self.rows: int = rows
         self.expand: bool = expand
@@ -53,6 +63,7 @@ class Huxley:
 
     @property
     def crs(self):
+        """Return the CRS code."""
         return self._crs
 
     @crs.setter
@@ -63,6 +74,7 @@ class Huxley:
             self._crs = value
 
     def get_services(self) -> dict:
+        """Return a dictionary of services."""
         services: dict = {}
         url: str = urljoin(Server.BASE, f"/{self.endpoint}/{self.crs}/{self.rows}")
         params = {"expand": str(self.expand)}
@@ -87,14 +99,17 @@ class Huxley:
 
     @property
     def generated_at(self) -> str:
+        """Return the date and time the data was generated."""
         return self.services["generatedAt"]
 
     @property
     def location_name(self) -> str:
+        """Return the location name."""
         return self.services["locationName"]
 
     @property
     def train_services(self) -> list:
+        """Return a list of train services."""
         train_services: list = []
         if self.services["trainServices"] is not None:
             for train_service in self.services["trainServices"]:
@@ -124,6 +139,7 @@ class Huxley:
 
     @property
     def bus_services(self) -> list:
+        """Return a list of bus services."""
         bus_services: list = []
         if self.services["busServices"] is not None:
             for bus_service in self.services["busServices"]:
@@ -142,6 +158,7 @@ class Huxley:
 
     @property
     def nrcc_messages(self) -> list:
+        """Return a list of NRCC messages."""
         nrcc_messages: list = []
         if self.services["nrccMessages"] is not None:
             for service in self.services["nrccMessages"]:
