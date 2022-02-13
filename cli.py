@@ -1,3 +1,4 @@
+"""Show rail departures using the Huxley library."""
 import click
 from rich import box
 from rich.console import Console
