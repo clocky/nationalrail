@@ -15,6 +15,7 @@ python-dateutil = "^2.8.2"
 python-decouple = "^3.5"
 rich = "^11.0.0"
 Flask = "^2.0.2"
+tabulate = "^0.8.9"
 
 [tool.poetry.dev-dependencies]
 mypy = "^0.931"
@@ -24,6 +25,7 @@ flake8 = "^4.0.1"
 black = "^21.12b0"
 types-bleach = "^4.1.4"
 types-requests = "^2.27.7"
+types-tabulate = "^0.8.5"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
