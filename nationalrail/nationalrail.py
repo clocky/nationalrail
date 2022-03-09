@@ -32,6 +32,7 @@ class Service:
     delay_reason: str = ""
     via: str = ""
     operator: str = ""
+    guid: str = ""
     calling_points: dict = field(default_factory=dict)
 
     @property
@@ -134,6 +135,7 @@ class Huxley:
                 service.platform = train_service["platform"]
                 service.operator = train_service["operator"]
                 service.via = train_service["destination"][0]["via"]
+                service.guid = train_service["serviceIdGuid"]
                 train_services.append(service)
         return train_services
 

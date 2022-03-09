@@ -1,0 +1,98 @@
+<!doctype html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/style/modern.css">
+</head>
+<body>
+<h1>Welcome to <strong>{{station.location_name}} Station</strong></h1>
+<div id="station">
+    {% for service in station.train_services %}
+
+        {% if service.platform != None %}
+            {% set state = "platform" %}
+        {% else %}
+            {% set state = "wait" %}
+        {% endif %}
+
+        {% if service.is_cancelled %}
+            {% set state = "cancelled" %}
+        {% endif %}
+
+        <div class="board {{ state }}" id="{{ service.guid }}">
+            <!-- {{ service.std }} to {{ service.destination }} -->
+            <header>
+                <div class="status">
+                    <time>{{ service.std }}</time>
+                    {% if service.is_cancelled %}
+                    <span class="cancelled">
+                        Cancelled
+                    </span>
+                    {% endif %}
+                </div>
+                <h2 class="destination">{{ service.destination }}</h2>
+                <h3 class="via">
+                    {%- if service.via %}
+                        {{- service.via -}}
+                    {%- else -%}
+                        &nbsp;
+                    {%- endif -%}
+                </h3>
+                {% if service.platform != None and service.is_cancelled == False -%}
+                    <h3 class="platform">Platform <strong>{{- service.platform  -}} 🚶</strong></h3>
+                {% endif %}
+                {% if service.platform == None and service.is_cancelled == False -%}
+                    <strong>
+                        Wait ✋
+                    </strong>
+                {%- endif %}
+                {% if service.is_cancelled == True -%}
+                    <strong>
+                        ❌
+                    </strong>
+                {%- endif %}
+            </header>
+
+            {% for point in service.calling_points %}
+                {% set calling_points = point.callingPoint | length %}
+                <ul class="calling-points">
+                    <li class="calling">
+                        <span class="calling-at">
+                        {% if service.is_cancelled == True -%}
+                            Was calling at:
+                        {% else %}
+                            Calling at:
+                        </span>
+                        {% endif %}
+                        {% if calling_points > 16 -%}
+                            <span class="page">1 of 2</span>
+                        {%- endif %}
+                    </li>
+
+                    {% for station in point.callingPoint %}
+                        <!-- {{- station.locationName -}} ({{ station.crs }})-->
+                        {%- if loop.index <= 16 %}
+                        <li class="calling-point">
+                            <a href="/station/{{station.crs | lower }}">
+                                {{- station.locationName -}}
+                            </a>
+                            {% if service.is_cancelled != True -%}
+                                <time>
+                                    {{- station.st -}}
+                                </time>
+                            {% endif %}
+                        </li>
+                        {% endif -%}
+                    {% endfor %}
+                </ul>
+            {% endfor %}
+
+            <footer>
+                {% if service.is_cancelled %}
+                    {{ service.cancel_reason_short }}
+                {% endif %}
+            </footer>
+        </div>
+    {% endfor %}
+</div>
+
+</body>

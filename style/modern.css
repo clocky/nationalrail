@@ -1,0 +1,155 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,400;0,700;1,400;1,500&display=swap');
+
+body {
+    margin: 0;
+    background-color: #000000;
+    font-family: "Ubuntu", Helvetica, Arial, sans-serif;
+}
+
+/** Welcome to London Waterloo Station **/
+
+h1 {
+    color: #fff;
+    font-weight: 400;
+    font-style: italic;
+    background-color: #354863;
+    margin: 0;
+    padding: 0.5rem;
+    letter-spacing: -0.05rem;
+}
+
+h1 strong {
+    font-weight: 700;
+    font-size: 2.25rem;
+}
+
+/** Station boards container **/
+
+div#station {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    border: 2rem solid #000;
+}
+
+/** Boards **/
+
+.board {
+    width: 16rem;
+    border-left: #000 1px solid;
+    border-right: #000 1px solid;
+}
+
+/** Board header, including colours for states  **/
+
+.board header {
+    min-height: 8rem;
+    color: #fff;
+    padding: 0.5rem;
+}
+
+.board.platform header {
+    background-color: #107c10;
+}
+
+.board.wait header {
+    background-color: #0078d4;
+}
+
+.board.cancelled header {
+    background-color: #000;
+}
+
+.board header .status {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.board header .status time {
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+.board header .status .cancelled {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #ffcc00;
+}
+
+.board header h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.board header h3 {
+    font-size: 0.9rem;
+    font-weight: 400;
+    margin: 0.2rem 0;
+}
+
+.board header strong {
+    display: block;
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.board ul {
+    list-style-type: none;
+    line-height: 1.25rem;
+    padding: 0.5rem;
+}
+
+.board ul li {
+    margin: 0;
+}
+
+.board ul.calling-points {
+    font-size: 0.9rem;
+    margin: 0;
+    min-height: 22rem;
+}
+
+.board ul.calling-points li.calling-point {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    color: #fff;
+}
+
+.board ul.calling-points li.calling-point a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.board ul.calling-points li.calling-point a:hover {
+    text-decoration: underline;
+}
+
+.board li.calling {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0.125rem 0;
+}
+
+.board li.calling span.page {
+    color: #fff;
+    border: 1px solid #fff;
+    font-size: 0.66rem;
+    padding: 0rem 0.8rem;
+    height: 0.8rem;
+    line-height: 0.8rem;
+}
+
+.board li.calling span.calling-at{
+    color: #ffcc00;
+}
+
+footer {
+    padding: 0.5rem;
+    color: #0078d4;
+    font-size: 0.8rem;
+    min-height: 2rem;
+}

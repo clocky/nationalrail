@@ -23,7 +23,7 @@ def departures(crs: str):
 def station(crs: str):
     """Show station details."""
     station = Huxley(crs=crs, rows=5, endpoint="departures", expand=True)
-    return render_template("station.jinja", station=station)
+    return render_template("modern.jinja", station=station)
 
 
 @app.route("/fonts/<path:path>")
